@@ -1,941 +1,264 @@
-<!doctype html>
-<html lang="id">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
-<title>EduBros — Star Hunt Quiz (Playful, Final)</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TCG FUNDAMATH</title>
 <style>
-  :root{
-    --bg-top:#9bd8ff; --bg-bot:#ffd7a6;
-    --card: rgba(255,255,255,0.95);
-    --muted:#6b7080;
-    --accent:#FF8A65;
-    --accent2:#6C5CE7;
-    --shadow: 0 12px 30px rgba(23,23,40,0.12);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%; margin:0; background:linear-gradient(180deg,var(--bg-top),var(--bg-bot)); color:#25303d; font-family:'Poppins',system-ui, Arial, sans-serif; -webkit-font-smoothing:antialiased}
-  #wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-
-  .canvas-wrap{width:min(1100px, calc(100vw - 28px)); max-width:100%; aspect-ratio:16/9; background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; border:2px solid rgba(255,255,255,0.06); box-shadow:var(--shadow); position:relative}
-  canvas{width:100%; height:100%; display:block; image-rendering:pixelated; background:transparent}
-
-  .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(12,14,20,0.45); z-index:60; padding:16px}
-  .card{width:min(880px,96vw); background:var(--card); border-radius:14px; padding:18px; border:1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow)}
-  .title{font-weight:700}
-  .muted{color:var(--muted); font-size:14px}
-  .btn{display:inline-block;padding:10px 14px;border-radius:10px;border:2px solid rgba(0,0,0,0.06);background:#ffffff;color:inherit;cursor:pointer;font-weight:600}
-  .btn.primary{background:linear-gradient(180deg,var(--accent),#ff6f3f);border-color:rgba(0,0,0,0.06); color:white}
-  .btn.ghost{background:transparent;border:2px dashed rgba(0,0,0,0.06)}
-  .btnbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-  .center{text-align:center}
-
-  #touch{position:fixed;left:env(safe-area-inset-left);right:env(safe-area-inset-right);bottom:env(safe-area-inset-bottom);display:flex;justify-content:space-between;padding:12px;gap:8px;pointer-events:none;z-index:50}
-  .pad{pointer-events:auto;display:flex;gap:8px}
-  .pad .key,.pad .jump{width:64px;height:64px;border-radius:12px;border:2px solid rgba(0,0,0,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.8));display:flex;align-items:center;justify-content:center;font-weight:700;user-select:none;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
-  .pad .jump{width:88px}
-  .pad .key:active, .pad .jump:active{transform:translateY(2px);}
-
-  #quiz .card{max-width:520px; width:100%}
-  #qTitle{color:var(--accent2)}
-  #qChoices{display:flex;flex-direction:column;gap:10px}
-  #qChoices button{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(255,255,255,0.92));cursor:pointer;font-weight:600}
-  #qChoices button .dot{width:18px;height:18px;border-radius:6px;background:var(--accent);display:inline-block}
-  #qFeedback{min-height:20px;color:#2f3b47}
-
-  #loading .card{width:360px;text-align:center}
-  progress{width:90%;height:12px;border-radius:8px;overflow:hidden}
-
-  #unansweredList{max-height:220px; overflow:auto; padding:8px; border-radius:8px; background:linear-gradient(180deg, rgba(108,92,231,0.06), rgba(255,138,101,0.04)); margin-top:8px}
-
-  #gameOver .card{max-width:520px}
-  #mobileInfo{display:none; font-size:13px; color:#123; margin-top:8px; text-align:center;}
-  @media (max-width:720px){ .canvas-wrap{aspect-ratio:16/10} #mobileInfo{display:block} }
-</style>
-</head>
-<body>
-  <div id="wrap">
-    <div class="canvas-wrap" role="application" aria-label="EduBros Game Area">
-      <canvas id="game" aria-label="EduBros Game Canvas"></canvas>
-    </div>
-  </div>
-
-  <!-- Overlays -->
-  <div id="menu" class="overlay" style="display:flex" role="dialog" aria-modal="true">
-    <div class="card center">
-      <div style="display:flex;gap:12px;align-items:center;justify-content:center">
-        <div style="width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,#FFD54F,#FF8A65);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:#2a2a2a;box-shadow:0 8px 22px rgba(0,0,0,0.08)">★</div>
-        <div style="text-align:left">
-          <div class="title" style="font-size:36px;color:#2b2b2b">EduBros</div>
-          <div class="muted">Star-Hunt Quiz — Platformer & Kuis (Playful)</div>
-        </div>
-      </div>
-
-      <p style="text-align:left;margin-top:12px;color:#25303d">Aturan singkat:
-      <ul style="text-align:left;color:#25303d">
-        <li>Kontrol: ← → bergerak, ↑ / Spasi = lompat.</li>
-        <li>Per stage ada 8 bintang; sebagian berisi soal, sebagian kosong.</li>
-        <li>Jawab soal saat kena bintang — jawaban <b>tidak perlu benar</b> untuk membuka stage; benar/salah hanya tercatat untuk hasil akhir.</li>
-      </ul>
-      </p>
-      <div class="btnbar" style="margin-top:12px">
-        <button id="startBtn" class="btn primary">Mulai</button>
-        <button id="howBtn" class="btn">Cara Main</button>
-      </div>
-      <div class="muted" style="margin-top:10px">Versi: final — playable, smooth, responsif</div>
-    </div>
-  </div>
-
-  <div id="how" class="overlay" role="dialog" aria-modal="true">
-    <div class="card">
-      <div class="title" style="font-size:20px;color:var(--accent2)">Cara Main</div>
-      <ol style="margin-top:8px;color:#25303d">
-        <li>Kumpulkan bintang — beberapa punya soal.</li>
-        <li>Kuis mem-pause game. Pilih jawaban. Jawaban tetap dihitung, benar atau salah.</li>
-        <li>Jawaban (benar/salah) akan meningkatkan progress stage. Setelah cukup, gerbang terbuka.</li>
-        <li>Hati-hati lubang berduri — jangan jatuh ke dalam. Gunakan lompat flowy untuk melewati.</li>
-      </ol>
-      <div class="btnbar" style="margin-top:12px">
-        <button class="btn" onclick="toggleOverlay('how',false)">Tutup</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="quiz" class="overlay" role="dialog" aria-modal="true">
-    <div class="card">
-      <div class="title" id="qTitle" style="font-size:18px">Pertanyaan</div>
-      <div id="qText" style="margin-top:8px;color:#25303d;font-weight:600"></div>
-      <div id="qChoices" style="margin-top:12px"></div>
-      <div id="qFeedback" class="muted" style="margin-top:8px"></div>
-      <div class="btnbar" style="margin-top:12px">
-        <button id="skipBtn" class="btn ghost" title="Tutup kuis, bintang tetap bisa dihitung">Lewati</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="loading" class="overlay" role="dialog" aria-modal="true">
-    <div class="card center">
-      <div class="title" style="font-size:22px;color:#2b2b2b">Memuat Dunia EduBros…</div>
-      <div class="muted" style="margin-top:8px">Menyiapkan level, soal, dan musik</div>
-      <div style="margin-top:12px"><progress id="prog" max="100" value="0"></progress></div>
-      <div class="muted" style="margin-top:10px">Tip: Gunakan tombol panah untuk bergerak — tombol sentuh tampil pada perangkat layar sentuh</div>
-    </div>
-  </div>
-
-  <div id="win" class="overlay" role="dialog" aria-modal="true">
-    <div class="card">
-      <div class="title" style="font-size:20px;color:var(--accent2)">Permainan Selesai</div>
-      <div id="winStats" style="margin-top:10px;color:#25303d"></div>
-      <div id="unansweredSection" style="margin-top:8px">
-        <div class="muted">Soal yang tidak terjawab:</div>
-        <div id="unansweredList"></div>
-      </div>
-      <div class="btnbar" style="margin-top:12px">
-        <button id="playAgainBtn" class="btn primary">Main Lagi</button>
-        <button id="reviewBtn" class="btn">Ulangi Soal Belum Terjawab</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="gameOver" class="overlay" role="dialog" aria-modal="true">
-    <div class="card center">
-      <div class="title" style="font-size:28px;color:#2b2b2b">GAME OVER 💀</div>
-      <div class="muted" style="margin-top:8px;color:#25303d">Nyawamu habis — coba ulang stage atau kembali ke menu</div>
-      <div class="btnbar" style="margin-top:14px">
-        <button id="retryBtn" class="btn primary">Coba Lagi</button>
-        <button id="toMenuBtn" class="btn">Kembali ke Menu</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Touch controls (visible on touch devices) -->
-  <div id="touch" aria-hidden="false">
-    <div class="pad">
-      <div class="key" data-k="ArrowLeft">←</div>
-      <div class="key" data-k="ArrowRight">→</div>
-    </div>
-    <div class="pad">
-      <div class="jump" data-k="Space">Lompat</div>
-    </div>
-  </div>
-
-  <div id="mobileInfo" style="max-width:1100px;margin:12px auto;text-align:center;color:#123;">
-    Kontrol layar tersedia di bawah — geser / gunakan tombol untuk bergerak.
-  </div>
-
+:root{--bg:#101827;--ar:#193D72;--cy:#57D9F5;--rd:#7F2834;--go:#F4C96B;--wh:#F3F5F8;--gr:#8994A7;--ok:#63D9A1;--cw:clamp(82px,12.5vh,124px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--bg);color:var(--wh);font:15px/1.4 system-ui,"Segoe UI",Arial,sans-serif;overflow:hidden;user-select:none}
+body{position:relative}button{font:inherit;cursor:pointer;border:0;color:inherit}
+.scr{display:none;position:absolute;inset:0;overflow:auto}.scr.on{display:flex}
+.pg{flex-direction:column;align-items:center;gap:14px;padding:22px;background:radial-gradient(#193D72,#101827)}
+.b{display:inline-block;background:linear-gradient(#ffe29a,#F4C96B);color:#101827;font-weight:800;padding:11px 24px;border-radius:12px;box-shadow:0 4px 0 #a87f2d;transition:.15s}
+.b:hover{filter:brightness(1.1);transform:translateY(-2px)}.b:active{transform:translateY(2px);box-shadow:0 1px 0 #a87f2d}
+.b.s{background:linear-gradient(#27427a,#193D72);color:var(--wh);border:2px solid var(--cy);box-shadow:0 4px 0 #0a1a44}
+.nt{color:var(--gr);font-size:13px}h2{color:var(--go);font-size:28px}
+#menu{align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#193D72,#101827 70%);overflow:hidden}
+.mc{position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;align-items:center}.mc .b{width:290px}
+h1{font-size:clamp(34px,7vw,76px);font-weight:900;letter-spacing:2px;background:linear-gradient(#fff,var(--cy) 55%,#2a7bd6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #0a1a44)}
+.sl{color:var(--go);letter-spacing:2px;font-style:italic;margin-bottom:12px}
+.deco span{position:absolute;bottom:-60px;color:#57d9f544;animation:drift 12s linear infinite}
+@keyframes drift{to{transform:translateY(-115vh) rotate(180deg)}}
+.dc{position:absolute;animation:spin 6s ease-in-out infinite alternate}.d0{left:8%;top:30%}.d1{right:9%;top:20%}.d2{left:66%;bottom:6%}
+@keyframes spin{from{transform:rotate(-14deg)}to{transform:rotate(14deg) translateY(-18px)}}
+.row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center}
+.hc{width:240px;padding:14px;border-radius:16px;background:#142a52;border:3px solid #fff2;cursor:pointer;text-align:center;transition:.2s}
+.hc:hover,.hc.sel{border-color:var(--go);box-shadow:0 0 24px #f4c96b88;transform:translateY(-4px)}
+.hv{width:150px;margin:auto;aspect-ratio:5/6}.hv svg,.av svg{width:100%;height:100%}
+.bob{animation:bob 2.4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-3px)}}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;width:min(1100px,100%)}
+.tc{background:#142a52;border:1px solid #57d9f555;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px;user-select:text}
+.sh{align-self:flex-start;color:var(--go)}.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;width:min(800px,100%)}
+.st div{background:#142a52;border-radius:12px;padding:12px;text-align:center}.st b{display:block;font-size:26px;color:var(--cy)}
+code{background:#0b1126;padding:2px 6px;border-radius:6px;color:var(--cy)}
+/* arena */
+#arena{position:absolute;inset:0;display:flex;flex-direction:column}
+.rg{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 16px;flex:1 1 0;min-height:0}
+.r1{background:linear-gradient(#3a0f19,#7F2834);border-bottom:3px solid #c05363}
+.r0{background:linear-gradient(#193D72,#101c3a);border-top:3px solid var(--cy)}
+.who{display:flex;gap:10px;align-items:center}.bars{display:flex;flex-direction:column;gap:3px}
+.av{width:clamp(56px,9vh,92px);aspect-ratio:5/6;border-radius:12px}
+.av.hit{animation:shake .35s}.av.sh{filter:drop-shadow(0 0 12px #57D9F5)}.av.hl{filter:drop-shadow(0 0 12px #63D9A1)}
+@keyframes shake{20%{transform:translateX(-9px)}60%{transform:translateX(9px)}}
+.shk{animation:shk .3s}@keyframes shk{25%{transform:translate(3px,-3px)}75%{transform:translate(-3px,3px)}}
+.hp{position:relative;height:18px;width:min(240px,34vw);background:#0007;border-radius:9px;border:2px solid #fff4;overflow:hidden}
+.hp i{display:block;height:100%;background:linear-gradient(90deg,#63D9A1,#c4f09a);transition:width .5s}.r1 .hp i{background:linear-gradient(90deg,#ff6b6b,#ffb199)}
+.hp span{position:absolute;inset:0;text-align:center;font:700 12px/14px sans-serif}
+.en small{display:block;font-size:11px}.en u{display:inline-block;width:11px;height:11px;margin:2px 3px 0 0;border-radius:3px;transform:rotate(45deg);background:#fff2}.en u.on{background:var(--cy);box-shadow:0 0 6px var(--cy)}
+.slots,.piles{display:flex;gap:8px;align-items:center}
+.pile{width:calc(var(--cw)*.62);aspect-ratio:5/7;border-radius:8px;border:2px solid var(--go);background:repeating-linear-gradient(45deg,#1b2f5a 0 6px,#122244 6px 12px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;box-shadow:3px 3px 0 #0006,6px 6px 0 #0004}.pile b{font-size:20px;color:var(--go)}
+.mid{flex:1.25 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:5vw;position:relative;perspective:700px;background:radial-gradient(#1b4a8a,#0c1530)}
+.plane{position:absolute;inset:6% 8%;transform:rotateX(38deg);border:2px solid #57D9F566;border-radius:20px;background:repeating-linear-gradient(60deg,#57d9f518 0 2px,transparent 2px 40px),repeating-linear-gradient(120deg,#57d9f518 0 2px,transparent 2px 40px),radial-gradient(circle,#57d9f533,transparent 60%)}
+.main{width:var(--cw);aspect-ratio:5/7;border:2px dashed #ffffff44;border-radius:10px;display:grid;place-items:center;font-size:11px;color:var(--gr);position:relative;z-index:1;text-align:center}
+.main .card{opacity:.95}.glow{box-shadow:0 0 26px 6px var(--go)}
+.tb{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:3}.tb .b{padding:5px 10px;font-size:11px}
+#info{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 14px;background:#0b1126;font-size:13px;min-height:46px}
+#info span:last-child{display:flex;gap:8px;flex:none}#info .b{padding:7px 14px}
+#hand{display:flex;gap:6px;justify-content:center;padding:26px 8px 10px;overflow-x:auto;min-height:calc(var(--cw)*1.4 + 40px);background:linear-gradient(#0c1530,#101827);align-items:flex-end}
+.card{--tc:#57D9F5;width:var(--cw);aspect-ratio:5/7;flex:none;border-radius:10px;border:2px solid var(--tc);background:linear-gradient(160deg,#27427a,#0f1a33);position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;text-align:center;box-shadow:0 6px 12px #0008;transition:transform .2s,box-shadow .2s;overflow:hidden}
+.ta{--tc:#ff6b6b}.th{--tc:#63D9A1}.tk{--tc:#F4C96B}.ts{--tc:#c79bff}
+.card[data-a]{cursor:pointer}.card[data-a]:hover{transform:translateY(-8px)}
+.card.sel{transform:translateY(-22px) scale(1.1);box-shadow:0 0 22px var(--tc);z-index:2}
+.cc{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--go);color:#101827;font:900 13px/22px sans-serif;text-align:center}
+.ci{width:50%;aspect-ratio:1;margin:12% 0 2px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(var(--tc),#0000 75%);font-size:calc(var(--cw)*.3);font-weight:900;text-shadow:0 0 8px #000}
+.card b{font-size:calc(var(--cw)*.105);line-height:1.1}.card em{font-size:calc(var(--cw)*.085);color:var(--tc);font-style:normal}
+.card p{font-size:calc(var(--cw)*.083);color:#c9d3e6;margin-top:auto;line-height:1.15}
+.card.sm{width:calc(var(--cw)*.5);padding:2px}.sm p,.sm em{display:none}.sm b{font-size:8px}.sm .ci{font-size:16px;margin-top:8px}.sm .cc{width:15px;height:15px;font-size:9px;line-height:15px}
+.ph{border-style:dashed;color:var(--gr);font-size:9px;justify-content:center;background:none;box-shadow:none}
+.off{filter:grayscale(.8) brightness(.7)}.off::after{content:"Energi kurang";position:absolute;bottom:3px;left:0;right:0;font-size:9px;background:#000b;color:var(--go)}
+.fly{position:fixed;z-index:60;pointer-events:none}.fly .card{width:100%;height:100%;aspect-ratio:auto}
+.pj{position:fixed;left:0;top:0;width:28px;height:28px;border-radius:50%;background:radial-gradient(#fff,var(--cy) 50%,transparent 72%);z-index:50;pointer-events:none}.pj.p1{background:radial-gradient(#fff,#ff6b6b 50%,transparent 72%)}
+.fl{position:fixed;font-weight:900;font-size:28px;text-shadow:0 2px 6px #000;animation:rise 1s forwards;z-index:60;pointer-events:none;white-space:nowrap}
+.fl.dm{color:#ff6b6b}.fl.sh{color:var(--cy);font-size:18px;margin-top:30px}.fl.hl{color:var(--ok)}.fl.en{color:var(--go);font-size:20px}
+@keyframes rise{from{transform:translate(-50%,0)}to{transform:translate(-50%,-55px);opacity:0}}
+#ban{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%) scale(.8);padding:10px 28px;background:#0b1126ee;border:2px solid var(--go);border-radius:14px;font-weight:900;font-size:clamp(16px,2.6vw,28px);color:var(--go);opacity:0;pointer-events:none;transition:.25s;z-index:70;text-align:center}#ban.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#ov{display:none;position:fixed;inset:0;z-index:40;justify-content:center;padding:10px}#ov.top{display:flex;align-items:flex-start}#ov.mid{display:flex;align-items:center}
+.bk{position:absolute;inset:0;background:#050a1966}.mid .bk{background:#050a19aa}.win .bk{background:radial-gradient(#f4c96b77,#050a19dd)}
+.pn{position:relative;background:linear-gradient(#1c3668,#101c3a);border:2px solid var(--cy);border-radius:16px;padding:16px 20px;width:min(620px,94vw);max-height:92vh;overflow:auto;box-shadow:0 0 30px #57d9f566;animation:pop .25s;user-select:text}
+.pn.w{border-color:var(--go);box-shadow:0 0 60px #f4c96bcc}.pn.l{border-color:var(--gr)}@keyframes pop{from{transform:scale(.9);opacity:0}}
+.pn h3{color:var(--go);letter-spacing:1px;margin-bottom:6px}.pn h4{color:var(--cy)}.pn p{margin:5px 0}.qt{font-size:22px;font-weight:700;margin:10px 0}.rk{color:var(--gr);font-size:13px}
+.pn ol{padding-left:22px;margin:6px 0}.pn li{margin:4px 0}.pn input{width:100%;padding:12px;border-radius:10px;border:2px solid var(--cy);background:#0b1126;color:#fff;font-size:20px;margin:8px 0}
+.bt{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}#msg{color:var(--go);min-height:20px}.bd{color:#ff9aa8}.gd{color:var(--ok)}
+body.noanim *{animation:none!important;transition:none!important}
+@media(max-width:760px){:root{--cw:clamp(70px,11vh,100px)}.rg{padding:4px 8px;gap:6px}.hp{width:30vw}#info{font-size:11px}.slots{display:none}}
+</style></head><body>
+<div id="ov"></div><div id="ban"></div>
+<section id="menu" class="scr on"><div class="deco" id="deco"></div><div class="mc"><h1>TCG FUNDAMATH</h1><p class="sl">Susun Strategi, Taklukkan Angka!</p>
+<button class="b" data-a="go" data-v="char">MULAI BERMAIN</button><button class="b s" data-a="help">CARA BERMAIN</button><button class="b s" data-a="go" data-v="lib">PERPUSTAKAAN MATERI</button><button class="b s" data-a="go" data-v="prog">PROGRES BELAJAR</button><button class="b s" data-a="set">PENGATURAN</button></div></section>
+<section id="char" class="scr pg"></section><section id="diff" class="scr pg"></section><section id="game" class="scr"></section><section id="lib" class="scr pg"></section><section id="prog" class="scr pg"></section>
 <script>
-(() => {
-  'use strict';
-  // --- BASE logical resolution ---
-  const BASE_W = 960, BASE_H = 540;
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d', {alpha:true});
-
-  // physics constants (tuned for flowy jump)
-  const groundY = BASE_H - 60;
-  const WORLD_END_X = 9800;
-
-  const PAL = {
-    bgTop:'#9bd8ff', bgBottom:'#ffd7a6',
-    ground1:'#9be7c4', ground2:'#6fe7c9',
-    block:'#6c5ce7', blockEdge:'#4630b3',
-    star:'#ffd95a', starEdge:'#ffb700',
-    player:'#34d3bf', playerEdge:'#1aa38f',
-    enemy:'#ff7b7b', enemyEdge:'#ff3b3b',
-    text:'#25303d',
-    accent:'#ff8a65', accent2:'#6c5ce7'
-  };
-
-  const state = {
-    scene:'menu', camX:0,
-    keys:{}, touch:{left:false,right:false},
-    gravity:0.6, friction:0.72,
-    lives:3, checkpointX:60,
-    correct: new Set(), wrong: new Set(),
-    usedQuizIndices: new Set(),
-    stageAnswered:[],
-    pendingQuestion: null, pendingStar: null,
-    quizCooldownUntil:0, toast: null,
-    shakeUntil:0, particles: []
-  };
-
-  // level (platforms, moving, enemies) -- reuse earlier layout
-  const barriers = [
-    {x:2200, y:0, w:20, h:groundY, opened:false, need:3},
-    {x:4600, y:0, w:20, h:groundY, opened:false, need:3},
-    {x:7000, y:0, w:20, h:groundY, opened:false, need:3},
-    {x:9400, y:0, w:20, h:groundY, opened:false, need:4}
-  ];
-  const STAGE_COUNT = barriers.length;
-  const STAGE_BOUNDS = (function mkBounds(){ const B=[]; for(let i=0;i<STAGE_COUNT;i++){ const start = i===0?0:(barriers[i-1].x+barriers[i-1].w); const end = barriers[i].x; B.push({start,end}); } return B; })();
-
-  const staticPlatforms = [
-    {x:0,    y:groundY, w:2200, h:60},
-    {x:2220, y:groundY, w:2380, h:60},
-    {x:4620, y:groundY, w:2380, h:60},
-    {x:7020, y:groundY, w:2380, h:60},
-    {x:9420, y:groundY, w:260,  h:60},
-
-    {x:260,  y:groundY-110, w:140, h:20},
-    {x:520,  y:groundY-170, w:140, h:20},
-    {x:820,  y:groundY-130, w:160, h:20},
-    {x:1300, y:groundY-190, w:160, h:20},
-
-    {x:2400, y:groundY-150, w:160, h:20},
-    {x:2760, y:groundY-210, w:160, h:20},
-    {x:3160, y:groundY-150, w:160, h:20},
-    {x:3540, y:groundY-210, w:160, h:20},
-
-    {x:4800, y:groundY-150, w:160, h:20},
-    {x:5160, y:groundY-210, w:160, h:20},
-    {x:5560, y:groundY-150, w:160, h:20},
-    {x:5940, y:groundY-210, w:160, h:20},
-
-    {x:7200, y:groundY-150, w:160, h:20},
-    {x:7560, y:groundY-210, w:160, h:20},
-    {x:7960, y:groundY-150, w:160, h:20},
-    {x:8340, y:groundY-210, w:160, h:20},
-  ];
-
-  const movingPlatforms = [
-    {x:2000,y:groundY-180,w:160,h:20, dir:1, speed:0.9, min:1900, max:2120, dx:0},
-    {x:4380,y:groundY-200,w:160, dir:-1,speed:0.8, min:4240, max:4500, dx:0},
-    {x:6780,y:groundY-180,w:160, dir:1, speed:1.0, min:6660, max:6920, dx:0},
-    {x:9180,y:groundY-200,w:160, dir:-1,speed:0.7, min:9040, max:9320, dx:0}
-  ];
-
-  // spike pits (holes) replace earlier spikes on top of ground
-  const spikePits = [
-    {x:1700, w:140}, {x:4100, w:140}, {x:6500, w:140}, {x:8900, w:140}
-  ];
-
-  const enemies = [
-    {x:840,  y:groundY-28, w:28, h:28, dir:-1, speed:1.1, min:760,  max:920},
-    {x:3050, y:groundY-28, w:28, h:28, dir:1,  speed:1.2, min:2960, max:3160},
-    {x:5450, y:groundY-28, w:28, h:28, dir:-1, speed:1.0, min:5360, max:5560},
-    {x:7850, y:groundY-28, w:28, h:28, dir:1,  speed:1.1, min:7760, max:7960}
-  ];
-
-  const goal = {x:WORLD_END_X-120, y:groundY-120, w:18, h:120};
-
-  // player (tuned)
-  const player = { x:60, y:groundY-40, w:28, h:40, vx:0, vy:0, onGround:false, facing:1 };
-  // jump tuning
-  const JUMP_V = -16; // stronger initial impulse
-  const MAX_WALK_SPEED = 5.6;
-
-  // quiz bank (same)
-  const QUIZ = [ /* same list as earlier - shortened here for brevity; full set is identical to previous version */ 
-    {q:"Hasil dari 16 ½ × 27 ⅔ adalah …", choices:["24","144","12","36"], correct:3, tag:"Aritmetika"},
-    {q:"Deret aritmetika dimulai dari 6 dan beda 7. Suku ke-10 adalah …", choices:["62","63","64","65"], correct:2, tag:"Barisan"},
-    {q:"Luas trapesium sisi sejajar 12 cm dan 20 cm, tinggi 9 cm adalah …", choices:["96 cm²","108 cm²","120 cm²","144 cm²"], correct:1, tag:"Bangun Datar"},
-    {q:"Pola segitiga: 1, 3, 6, 10, … Jumlah titik pada susunan ke-7 adalah …", choices:["28","27","21","36"], correct:0, tag:"Pola Bilangan"},
-    {q:"Jika f(x)=2x+7 dan g(x)=x²−2x+1, maka (f∘g)(−1) = …", choices:["9","11","13","15"], correct:3, tag:"Fungsi"},
-    {q:"Diketahui f(x)=2x+8 dan g(x)=4x−8. Nilai (f∘g)(x) adalah …", choices:["8x−16","8x−8","6x−8","4x−8"], correct:1, tag:"Fungsi"},
-    {q:"Jika f(x)=3x+8 dan (f∘g)(x)=3x−1, maka g(10) = …", choices:["5","6","7","8"], correct:2, tag:"Fungsi"},
-    {q:"Diketahui f(x)=2x+5 dan g(x)=x−1. Jika (f∘g)(a)=13, maka a = …", choices:["6","3","4","5"], correct:3, tag:"Fungsi"},
-    {q:"f(x)=3x+6. Nilai f⁻¹(15) adalah …", choices:["3","4","5","6"], correct:0, tag:"Fungsi Invers"},
-    {q:"Di Rejeki: buku Rp8.000, penghapus Rp3.500, bolpoin Rp6.500. Di Makmur: buku Rp9.000, penghapus Rp3.000, bolpoin Rp6.000. Pernyataan benar adalah …",
-     choices:[
-       "Harga buku tulis di Rejeki lebih mahal dari Makmur.",
-       "Harga buku tulis di Rejeki lebih murah dari Makmur.",
-       "Harga penghapus di Rejeki sama dengan di Makmur.",
-       "Harga penghapus di Rejeki lebih murah dari Makmur.",
-       "Harga bolpoin di Rejeki lebih murah dari Makmur."
-     ], correct:1, tag:"Numerasi"},
-    {q:"Rudi punya 120 kelereng. Setelah pembagian seperti soal, selisih paling banyak dengan temannya adalah …", choices:["23","22","20","14","4"], correct:2, tag:"Persentase"},
-    {q:"Toko membeli 30 buku @Rp40.000 dan ongkir Rp150.000. Dijual @Rp50.000. Keuntungan total adalah …", choices:["Rp200.000","Rp250.000","Rp300.000","Rp350.000"], correct:2, tag:"Keuangan"},
-    {q:"Di kelas ada 12 laki-laki dan 8 perempuan. Peluang terpilih perempuan adalah …", choices:["1/2","2/5","3/5","1/4"], correct:1, tag:"Peluang"},
-    {q:"Dadu 6 sisi dilempar sekali. (a) genap, (b) ganjil > 3. Peluangnya …", choices:["1/2 dan 1/6","1/3 dan 1/2","1/2 dan 1/3","2/3 dan 1/6"], correct:0, tag:"Peluang"},
-    {q:"Stok beras 75 kg. Dijual tiap hari bertambah 5 kg, mulai 5 kg hari pertama. Berapa hari sampai habis?", choices:["5 hari","8 hari","10 hari","12 hari"], correct:0, tag:"Barisan"},
-    {q:"Menabung bulan pertama Rp250.000, tiap bulan naik Rp50.000. Total 6 bulan adalah …", choices:["Rp2.250.000","Rp2.400.000","Rp2.550.000","Rp2.700.000"], correct:0, tag:"Barisan"},
-    {q:"Bakteri menjadi 3× tiap 30 menit. Jika awal 2 bakteri, setelah pembelahan ke-4 jumlahnya …", choices:["54","81","108","162"], correct:3, tag:"Pertumbuhan"},
-    {q:"Modal Rp1.000.000 bertambah 20% tiap bulan. Nilai modal pada bulan ke-3 adalah …", choices:["Rp1.440.000","Rp1.728.000","Rp2.000.000","Rp2.400.000"], correct:1, tag:"Pertumbuhan"},
-    {q:"(2a + 3b − 4) + (a − 3b + 2) = …", choices:["3a − 2","a + b − 2","3a + 2b − 2","2a − 2"], correct:0, tag:"Aljabar"},
-    {q:"Sederhanakan: 4(3a + 2) − 3(6a − 5) = …", choices:["6a + 23","−6a + 23","−12a − 7","−6a − 23"], correct:1, tag:"Aljabar"}
-  ];
-
-  const STARS_PER_STAGE = 8;
-  let quizStars = [];
-
-  // helpers
-  function randInt(n){ return (Math.random()*n)|0; }
-  function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]];} return a; }
-
-  function genStarsForStages(){
-    quizStars = [];
-    state.usedQuizIndices.clear();
-    state.stageAnswered = Array(STAGE_COUNT).fill(0);
-    const allIdx = Array.from({length:QUIZ.length}, (_,i)=>i);
-    let pool = shuffle(allIdx), poolPos=0;
-    function nextQuizIndex(){ if(poolPos>=pool.length){ pool=shuffle(allIdx); poolPos=0;} const v=pool[poolPos++]; state.usedQuizIndices.add(v); return v; }
-
-    for (let s=0;s<STAGE_COUNT;s++){
-      const {start,end} = STAGE_BOUNDS[s];
-      const left = start + 140, right = end - 140;
-      const span = Math.max(200, right - left);
-      const need = barriers[s].need;
-      const target = Math.round(STARS_PER_STAGE * 0.6);
-      const quizCount = Math.min(STARS_PER_STAGE, Math.max(need+1, target));
-      const quizSlots = new Set(shuffle(Array.from({length:STARS_PER_STAGE},(_,i)=>i)).slice(0, quizCount));
-      for (let k=0;k<STARS_PER_STAGE;k++){
-        const base = left + (k+0.5)*(span / STARS_PER_STAGE);
-        const jitter = (Math.random()*160 - 80);
-        const x = clamp(Math.floor(base + jitter), left+40, right-40);
-        const yOptions = [groundY-30, groundY-90, groundY-150, groundY-210];
-        const y = yOptions[randInt(yOptions.length)];
-        if (quizSlots.has(k)){
-          quizStars.push({x,y,w:18,h:18, active:true, stage:s, locked:false, quiz:true, quizIndex: nextQuizIndex()});
-        } else {
-          quizStars.push({x,y,w:18,h:18, active:true, stage:s, locked:false, quiz:false, quizIndex:null});
-        }
-      }
-    }
-  }
-
-  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
-  function rectsOverlap(a,b){ return a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y; }
-
-  // Responsive canvas & DPR
-  let SCALE = 1;
-  function resizeCanvas(){
-    const wrap = document.querySelector('.canvas-wrap');
-    const cssW = Math.max(320, Math.min(1100, wrap.clientWidth));
-    const cssH = Math.round(cssW * (BASE_H / BASE_W));
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    canvas.style.width = cssW + 'px';
-    canvas.style.height = cssH + 'px';
-    canvas.width = Math.round(cssW * dpr);
-    canvas.height = Math.round(cssH * dpr);
-    SCALE = cssW / BASE_W;
-    ctx.setTransform(dpr * SCALE, 0, 0, dpr * SCALE, 0, 0);
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  // input
-  const keyMap = { ' ': 'Space', Spacebar:'Space', Left:'ArrowLeft', Right:'ArrowRight', Up:'ArrowUp' };
-  function normKey(k){ return keyMap[k] || k; }
-  window.addEventListener('keydown', e=>{ const k=normKey(e.key); if(['ArrowLeft','ArrowRight','ArrowUp','Space'].includes(k)) e.preventDefault(); state.keys[k]=true; }, {passive:false});
-  window.addEventListener('keyup', e=>{ const k=normKey(e.key); state.keys[k]=false; }, {passive:false});
-  const tpanel = document.getElementById('touch');
-  try{ if(!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) tpanel.style.display='none'; }catch(e){}
-  tpanel.addEventListener('touchstart', e=>{ const t=e.target.closest('[data-k]'); if(t){ e.preventDefault(); pressKey(t.dataset.k, true); } }, {passive:false});
-  tpanel.addEventListener('touchend', e=>{ const t=e.target.closest('[data-k]'); if(t){ e.preventDefault(); pressKey(t.dataset.k, false); } }, {passive:false});
-  function pressKey(k, down){ if(k==='ArrowLeft') state.touch.left=down; if(k==='ArrowRight') state.touch.right=down; if(k==='Space'&&down) doJump(); }
-
-  // Sound via WebAudio (simple tones)
-  const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  function playTone(freq, time=0.08, type='sine', vol=0.12){
-    try{
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = type; o.frequency.value = freq;
-      g.gain.value = vol;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start();
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + time);
-      setTimeout(()=>{ try{ o.stop(); o.disconnect(); g.disconnect(); }catch(_){} }, time*1000+50);
-    }catch(e){}
-  }
-
-  // Jump handling (flowy)
-  let jumpHeld = false;
-  function doJump(){
-    if (player.onGround){
-      player.vy = JUMP_V;
-      player.onGround = false;
-      spawnJumpParticles();
-      playTone(520, 0.12, 'sine', 0.12);
-      // small camera shake on big jump
-      state.shakeUntil = Date.now() + 120;
-    }
-  }
-
-  // physics helpers
-  function updateMovingPlatforms(){
-    for (const p of movingPlatforms){
-      const dx = p.speed * p.dir;
-      p.x += dx;
-      if (p.x < p.min){ p.x = p.min; p.dir = 1; }
-      if (p.x + p.w > p.max){ p.x = p.max - p.w; p.dir = -1; }
-      p.dx = dx;
-    }
-  }
-  function carryWithMovingPlatform(){
-    for (const p of movingPlatforms){
-      const onTop = player.onGround && Math.abs((player.y + player.h) - p.y) < 1.8 && player.x + player.w > p.x && player.x < p.x + p.w;
-      if (onTop){ player.x += (p.dx || 0); }
-    }
-  }
-  function collideWorldX(objs){
-    for (const o of objs) if (rectsOverlap(player,o)){
-      if (player.vx > 0) player.x = o.x - player.w;
-      else if (player.vx < 0) player.x = o.x + o.w;
-      player.vx = 0;
-    }
-  }
-  function collideWorldY(objs){
-    for (const o of objs) if (rectsOverlap(player,o)){
-      if (player.vy > 0){ player.y = o.y - player.h; player.vy = 0; player.onGround = true; }
-      else if (player.vy < 0){ player.y = o.y + o.h; player.vy = 0; }
-    }
-  }
-
-  function handleInput(){
-    const left = state.keys['ArrowLeft'] || state.touch.left;
-    const right = state.keys['ArrowRight'] || state.touch.right;
-    const jumpKey = state.keys['ArrowUp'] || state.keys['Space'];
-
-    if (left && !right){ player.vx -= 0.7; player.facing = -1; }
-    if (right && !left){ player.vx += 0.7; player.facing = 1; }
-    if (!left && !right){ player.vx *= state.friction; }
-    player.vx = clamp(player.vx, -MAX_WALK_SPEED, MAX_WALK_SPEED);
-
-    // variable gravity for flowy jump: lower gravity while ascending, higher when falling
-    if ((jumpKey || jumpHeld) && !player.onGround && player.vy < 0){
-      // lighter ascent (allow slight hold)
-      player.vy += state.gravity * 0.42;
-    } else {
-      // normal gravity (faster fall)
-      player.vy += state.gravity * 1.05;
-    }
-    // jumping trigger
-    if (jumpKey && player.onGround){ doJump(); }
-  }
-
-  function updateEnemies(){
-    for (const m of enemies){
-      m.x += m.speed * m.dir;
-      if (m.x < m.min){ m.x = m.min; m.dir = 1; }
-      if (m.x + m.w > m.max){ m.x = m.max - m.w; m.dir = -1; }
-      if (rectsOverlap(player, m)){
-        if (player.vy > 2){ player.vy = -9; m.min -= 6; m.max += 6; }
-        else { hitTrap(); }
-      }
-    }
-  }
-
-  function hitTrap(){
-    // lose a life, shake, respawn at checkpoint
-    state.lives -= 1;
-    spawnHurtParticles();
-    playTone(160, 0.22, 'square', 0.16);
-    state.shakeUntil = Date.now() + 260;
-    if (state.lives < 0){
-      // game over
-      toggleOverlay('gameOver', true);
-      state.scene = 'menu-paused';
-      playTone(120, 0.5, 'sawtooth', 0.22);
-      return;
-    }
-    // respawn
-    player.x = state.checkpointX; player.y = groundY - 80; player.vx = 0; player.vy = 0;
-    toast('Kamu terkena jebakan! Respawn...', 1200);
-  }
-
-  function toast(msg, dur=1000){
-    state.toast = {msg, until: Date.now() + dur};
-  }
-
-  // collect / trigger stars (quiz)
-  function collectQuizStars(){
-    if (state.pendingQuestion || Date.now() < state.quizCooldownUntil) return;
-    for (const s of quizStars){
-      if (!s.active || s.locked) continue;
-      if (rectsOverlap(player, s)){
-        if (s.quiz){
-          const qi = s.quizIndex;
-          state.pendingStar = s;
-          state.pendingQuestion = { ...QUIZ[qi], idx: qi, stage: s.stage };
-          s.locked = true;
-          showQuiz(state.pendingQuestion);
-        } else {
-          s.active = false; s.locked = false;
-          state.checkpointX = Math.max(state.checkpointX, player.x - 10);
-          toast('Bintang kosong — lanjut!', 900);
-          state.quizCooldownUntil = Date.now() + 300;
-        }
-        break;
-      }
-    }
-  }
-
-  // spike pit check: if player's feet inside pit area and not jumping high -> die
-  function checkSpikePits(){
-    for (const p of spikePits){
-      const px = p.x, pw = p.w;
-      // if player's horizontal center within pit and player's feet at ground level (fell into pit)
-      const centerX = player.x + player.w/2;
-      if (centerX > px && centerX < px + pw){
-        // If player's feet touch the pit bottom (i.e., y+h >= groundY - 6) => hit
-        if (player.y + player.h >= groundY - 6){
-          // kill
-          hitTrap();
-          return;
-        }
-      }
-    }
-  }
-
-  function checkPitFall(){ if (player.y > groundY + 160) { hitTrap(); } }
-
-  function checkBarriersOpenByProgress(){
-    for (let i=0;i<barriers.length;i++){
-      const b = barriers[i];
-      if (!b.opened && state.stageAnswered[i] >= b.need){ b.opened = true; }
-    }
-  }
-
-  function checkWin(){ if (rectsOverlap(player, goal)) { state.scene = 'win'; showWinOverlay(); } }
-
-  // --- QUIZ UI & logic ---
-  function showQuiz(q){
-    const qText = document.getElementById('qText');
-    const qChoices = document.getElementById('qChoices');
-    const qTitle = document.getElementById('qTitle');
-    const qFeedback = document.getElementById('qFeedback');
-
-    qTitle.textContent = `KUIS • ${q.tag || 'Soal'}`;
-    qText.textContent = q.q;
-    qChoices.innerHTML = '';
-    qFeedback.textContent = '';
-
-    q.choices.forEach((c, idx)=>{
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.style.justifyContent = 'flex-start';
-      btn.innerHTML = `<span class="dot" style="background:${PAL.accent2}"></span> <span style="flex:1">${c}</span>`;
-      btn.onclick = ()=> answerQuestion(q, idx);
-      qChoices.appendChild(btn);
-    });
-
-    document.getElementById('skipBtn').onclick = ()=>{
-      toggleOverlay('quiz', false);
-      if (state.pendingStar) state.pendingStar.locked = false;
-      state.pendingQuestion = null;
-      state.pendingStar = null;
-      state.quizCooldownUntil = Date.now() + 800;
-    };
-
-    toggleOverlay('quiz', true);
-    player.vx = 0;
-  }
-
-  function answerQuestion(q, idx){
-    const qFeedback = document.getElementById('qFeedback');
-    if (idx === q.correct){
-      qFeedback.textContent = '✅ Benar!';
-      state.correct.add(q.idx);
-      playTone(720, 0.12, 'sine', 0.12);
-    } else {
-      qFeedback.textContent = `❌ Salah — jawaban benar: ${q.choices[q.correct]}`;
-      state.wrong.add(q.idx);
-      playTone(180, 0.14, 'sawtooth', 0.14);
-    }
-
-    if (state.pendingStar){
-      state.pendingStar.active = false; state.pendingStar.locked = false;
-      state.checkpointX = Math.max(state.checkpointX, player.x - 10);
-      const sidx = state.pendingStar.stage;
-      state.stageAnswered[sidx] = Math.min((state.stageAnswered[sidx]||0) + 1, 99);
-    }
-
-    setTimeout(()=>{
-      toggleOverlay('quiz', false);
-      state.pendingQuestion = null; state.pendingStar = null;
-      state.quizCooldownUntil = Date.now() + 600;
-      checkBarriersOpenByProgress();
-    }, 650);
-  }
-
-  // particle system for jump & hurt
-  function spawnJumpParticles(){
-    for (let i=0;i<6;i++){
-      state.particles.push({
-        x: player.x + player.w/2 + (Math.random()*20-10),
-        y: player.y + player.h,
-        vx: (Math.random()*2-1)*0.9, vy: -Math.random()*2 - 1.2,
-        life: 400 + Math.random()*200, size: 4 + Math.random()*4, color: 'rgba(40,40,40,0.18)'
-      });
-    }
-  }
-  function spawnHurtParticles(){
-    for (let i=0;i<14;i++){
-      state.particles.push({
-        x: player.x + player.w/2 + (Math.random()*40-20),
-        y: player.y + player.h/2 + (Math.random()*20-10),
-        vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
-        life: 600 + Math.random()*400, size: 3 + Math.random()*5, color: 'rgba(240,80,80,0.9)'
-      });
-    }
-  }
-  function updateParticles(dt){
-    const now = Date.now();
-    for (let i=state.particles.length-1;i>=0;i--){
-      const p = state.particles[i];
-      p.x += p.vx * (dt/16);
-      p.y += p.vy * (dt/16);
-      p.vy += 0.12 * (dt/16);
-      p.life -= dt;
-      if (p.life <= 0) state.particles.splice(i,1);
-    }
-  }
-  function drawParticles(){
-    for (const p of state.particles){
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.ellipse(p.x - state.camX, p.y, p.size, p.size*0.6, 0, 0, Math.PI*2);
-      ctx.fill();
-    }
-  }
-
-  // drawing helpers
-  function starPath(r){
-    ctx.beginPath();
-    for (let i=0;i<5;i++){
-      const a1 = (Math.PI*2)*i/5 - Math.PI/2;
-      const a2 = a1 + Math.PI/5;
-      ctx.lineTo(Math.cos(a1)*r, Math.sin(a1)*r);
-      ctx.lineTo(Math.cos(a2)*(r*0.45), Math.sin(a2)*(r*0.45));
-    }
-    ctx.closePath();
-  }
-
-  function drawBackground(){
-    const g = ctx.createLinearGradient(0,0,0,BASE_H);
-    g.addColorStop(0, PAL.bgTop);
-    g.addColorStop(1, PAL.bgBottom);
-    ctx.fillStyle = g; ctx.fillRect(0,0,BASE_W,BASE_H);
-    for (let i=0;i<10;i++){
-      const y = 40 + (i*36);
-      ctx.fillStyle = `rgba(255,255,255,${0.06 + (i%3)*0.02})`;
-      const o = -((state.camX*0.14) % 400) + i*160;
-      ctx.fillRect(o, y, 260, 14);
-    }
-  }
-
-  function drawGroundSections(){
-    for (const g of staticPlatforms.filter(p=>p.h>=40)){
-      const sx = g.x - state.camX;
-      ctx.fillStyle = PAL.ground1; ctx.fillRect(sx, g.y, g.w, g.h);
-      ctx.fillStyle = PAL.ground2;
-      for (let i=0;i<g.w;i+=28) ctx.fillRect(sx+i, g.y+g.h-28, 24, 28);
-    }
-    for (const p of staticPlatforms.filter(p=>p.h<40)){
-      const sx = p.x - state.camX;
-      ctx.fillStyle = PAL.block; ctx.fillRect(sx, p.y, p.w, p.h);
-      ctx.strokeStyle = PAL.blockEdge; ctx.lineWidth = 2; ctx.strokeRect(sx+0.5, p.y+0.5, p.w-1, p.h-1);
-    }
-  }
-
-  function drawMovingPlatforms(){
-    for (const p of movingPlatforms){
-      const sx = p.x - state.camX;
-      ctx.fillStyle = '#ffd1dc'; ctx.fillRect(sx, p.y, p.w, p.h);
-      ctx.strokeStyle = '#ff8aa0'; ctx.lineWidth = 2; ctx.strokeRect(sx+0.5, p.y+0.5, p.w-1, p.h-1);
-    }
-  }
-
-  function drawSpikePits(){
-    for (const pit of spikePits){
-      const sx = pit.x - state.camX;
-      // draw rim
-      ctx.fillStyle = '#e0bca0'; ctx.fillRect(sx, groundY-10, pit.w, 12);
-      ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(sx+6, groundY+2, pit.w-12, 8); // inside shadow
-      // spikes inside (saw-tooth)
-      const spikeH = 24;
-      ctx.fillStyle = '#f27b7b'; ctx.strokeStyle = '#b33838';
-      for (let x=0; x<pit.w; x+=18){
-        ctx.beginPath();
-        ctx.moveTo(sx+x, groundY+2);
-        ctx.lineTo(sx+x+9, groundY+2 - spikeH);
-        ctx.lineTo(sx+x+18, groundY+2);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-      }
-    }
-  }
-
-  function drawStars(){
-    for (const s of quizStars){
-      if (!s.active) continue;
-      const x = s.x - state.camX, y = s.y;
-      ctx.save(); ctx.translate(x+9, y+9);
-      ctx.rotate((Date.now()/450) % (Math.PI*2));
-      ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2);
-      ctx.fillStyle = 'rgba(255,220,90,0.12)'; ctx.fill();
-      ctx.restore();
-      ctx.save(); ctx.translate(x+9, y+9); ctx.rotate((Date.now()/300) % (Math.PI*2));
-      ctx.fillStyle = PAL.star; ctx.strokeStyle = PAL.starEdge; ctx.lineWidth = 2; starPath(9); ctx.fill(); ctx.stroke();
-      ctx.restore();
-    }
-  }
-
-  function drawEnemies(){
-    for (const m of enemies){
-      const x = m.x - state.camX, y = m.y;
-      ctx.fillStyle = PAL.enemy; ctx.fillRect(x, y, m.w, m.h);
-      ctx.strokeStyle = PAL.enemyEdge; ctx.lineWidth = 2; ctx.strokeRect(x+0.5, y+0.5, m.w-1, m.h-1);
-      ctx.fillStyle = '#fff'; ctx.fillRect(x+6, y+8, 6, 6); ctx.fillRect(x+m.w-12, y+8, 6, 6);
-    }
-  }
-
-  function drawBarriers(){
-    for (let i=0;i<barriers.length;i++){
-      const b = barriers[i]; const sx = b.x - state.camX;
-      if (!b.opened){
-        ctx.fillStyle = 'rgba(255,200,110,0.95)'; ctx.fillRect(sx,b.y,b.w,b.h);
-        ctx.strokeStyle = '#d49b00'; ctx.lineWidth = 2; ctx.strokeRect(sx+0.5,b.y+0.5,b.w-1,b.h-1);
-        ctx.fillStyle = '#222'; ctx.font = '600 12px Poppins'; ctx.fillText(`Butuh ${b.need}`, sx-6, 28);
-      } else {
-        ctx.strokeStyle = 'rgba(255,220,150,0.9)'; ctx.setLineDash([6,6]); ctx.strokeRect(sx+0.5,b.y+0.5,b.w-1,b.h-1); ctx.setLineDash([]);
-      }
-    }
-  }
-
-  function drawGoal(){
-    const gx = goal.x - state.camX;
-    ctx.fillStyle = '#38c46b'; ctx.fillRect(gx, goal.y, goal.w, goal.h);
-    ctx.fillStyle = '#7bff8b'; ctx.beginPath();
-    ctx.moveTo(gx + goal.w, goal.y+10); ctx.lineTo(gx + goal.w + 36, goal.y+24); ctx.lineTo(gx + goal.w, goal.y+38);
-    ctx.closePath(); ctx.fill();
-  }
-
-  function drawPlayer(){
-    const x = Math.floor(player.x - state.camX);
-    const y = Math.floor(player.y);
-    ctx.fillStyle = PAL.player; ctx.fillRect(x, y, player.w, player.h);
-    ctx.strokeStyle = PAL.playerEdge; ctx.lineWidth = 2; ctx.strokeRect(x+0.5, y+0.5, player.w-1, player.h-1);
-    ctx.fillStyle = '#fff';
-    const eyeX = player.facing === 1 ? x + player.w - 10 : x + 6;
-    ctx.fillRect(eyeX, y + 12, 4, 4);
-  }
-
-  function currentStageIdx(){
-    for (let i=0;i<STAGE_BOUNDS.length;i++){
-      const b = STAGE_BOUNDS[i];
-      if (player.x >= b.start && player.x < b.end) return i;
-    }
-    return STAGE_BOUNDS.length - 1;
-  }
-
-  function drawHUD(){
-    const sIdx = currentStageIdx();
-    const need = barriers[sIdx].need;
-    const ok = state.stageAnswered[sIdx] || 0;
-    const found = quizStars.filter(st=>st.stage===sIdx && !st.active).length;
-    // HUD background
-    ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fillRect(8,8, 520, 72);
-    ctx.fillStyle = PAL.text; ctx.font = '700 16px Poppins'; ctx.fillText('EduBros — Star Hunt Quiz', 28, 30);
-    ctx.font = '12px Poppins'; ctx.fillStyle = '#444';
-    ctx.fillText(`Stage ${sIdx+1}: Terjawab ${ok}/${need}  •  ⭐ ditemukan ${found}/${STARS_PER_STAGE}`, 28, 48);
-    // lives
-    ctx.fillStyle = '#ff6b6b'; ctx.font='700 14px Poppins'; ctx.fillText('❤ '+Math.max(0,state.lives+1), 28, 66); // display lives as 3,2,1
-    // toast
-    if (state.toast){
-      if (Date.now() < state.toast.until){
-        ctx.save(); ctx.globalAlpha = 0.96; ctx.font = '600 14px Poppins'; ctx.textAlign = 'center'; ctx.fillStyle = '#222';
-        ctx.fillText(state.toast.msg, BASE_W/2, 36); ctx.restore();
-      } else state.toast = null;
-    }
-  }
-
-  // win overlay & unanswered
-  function showWinOverlay(){
-    const totalSolved = state.correct.size;
-    const totalWrong = state.wrong.size;
-    const assigned = Array.from(state.usedQuizIndices);
-    const unanswered = assigned.filter(i => !state.correct.has(i) && !state.wrong.has(i));
-    const winStats = document.getElementById('winStats');
-    winStats.innerHTML = `<div style="font-weight:700;color:#25303d">${totalSolved} benar • ${totalWrong} salah • ${unanswered.length} belum terjawab</div>`;
-    const listEl = document.getElementById('unansweredList'); listEl.innerHTML = '';
-    if (unanswered.length === 0){ listEl.textContent = 'Tidak ada — semua soal sudah dicoba.'; } else {
-      unanswered.forEach(idx=>{ const item = document.createElement('div'); item.style.padding='8px'; item.style.borderBottom='1px solid rgba(37,48,61,0.06)'; item.textContent = QUIZ[idx].q; listEl.appendChild(item); });
-    }
-    toggleOverlay('win', true);
-  }
-
-  // main loop
-  let lastTime = performance.now();
-  let rafId = 0;
-  function loop(now=performance.now()){
-    const dt = Math.min(40, now - lastTime);
-    lastTime = now;
-    if (state.scene === 'play'){
-      const paused = !!state.pendingQuestion;
-      if (!paused){
-        handleInput();
-        updateMovingPlatforms();
-        player.x += player.vx;
-        collideWorldX([...staticPlatforms, ...movingPlatforms, ...barriers.filter(b=>!b.opened)]);
-        player.y += player.vy;
-        player.onGround = false;
-        collideWorldY([...staticPlatforms, ...movingPlatforms, ...barriers.filter(b=>!b.opened)]);
-        carryWithMovingPlatform();
-        player.x = clamp(player.x, 0, WORLD_END_X);
-        player.y = Math.min(player.y, 2000);
-        state.camX = clamp(player.x - BASE_W/2 + player.w/2, 0, Math.max(0, WORLD_END_X - BASE_W));
-        updateEnemies();
-        checkSpikePits();
-        checkPitFall();
-        collectQuizStars();
-        checkBarriersOpenByProgress();
-        checkWin();
-      }
-    }
-
-    // draw
-    ctx.clearRect(0,0,BASE_W,BASE_H);
-    // camera shake effect
-    if (Date.now() < state.shakeUntil){
-      const s = (Math.random()*6 - 3);
-      ctx.save(); ctx.translate(s, 0);
-      drawScene(dt);
-      ctx.restore();
-    } else {
-      drawScene(dt);
-    }
-
-    updateParticles(dt);
-    rafId = requestAnimationFrame(loop);
-  }
-
-  function drawScene(dt){
-    drawBackground();
-    drawGroundSections();
-    drawMovingPlatforms();
-    drawSpikePits();
-    drawStars();
-    drawEnemies();
-    drawBarriers();
-    drawGoal();
-    drawPlayer();
-    drawParticles();
-    drawHUD();
-  }
-
-  // overlay utility
-  function toggleOverlay(id, show=true){
-    const el = document.getElementById(id);
-    if (!el) return false;
-    el.style.display = show ? 'flex' : 'none';
-    if (id !== 'loading'){
-      if (show) { state.sceneOverlay = id; } else { state.sceneOverlay = null; }
-    }
-    return true;
-  }
-
-  // buttons wiring
-  document.getElementById('startBtn').onclick = showLoading;
-  document.getElementById('howBtn').onclick = ()=> toggleOverlay('how', true);
-  document.getElementById('playAgainBtn').onclick = ()=> { toggleOverlay('win', false); toggleOverlay('menu', false); startGame(); };
-  document.getElementById('reviewBtn').onclick = ()=> {
-    const assigned = Array.from(state.usedQuizIndices);
-    const unanswered = assigned.filter(i => !state.correct.has(i) && !state.wrong.has(i));
-    toggleOverlay('win', false);
-    if (unanswered.length === 0){ toast('Tidak ada soal belum terjawab.'); startGame(); return; }
-    const idx = unanswered[0];
-    state.pendingQuestion = {...QUIZ[idx], idx: idx, stage: null};
-    showQuiz(state.pendingQuestion);
-  };
-  document.getElementById('retryBtn').onclick = ()=> { toggleOverlay('gameOver', false); startGame(); };
-  document.getElementById('toMenuBtn').onclick = ()=> { toggleOverlay('gameOver', false); toggleOverlay('menu', true); };
-
-  // loading & start
-  function showLoading(){
-    toggleOverlay('menu', false);
-    toggleOverlay('loading', true);
-    const prog = document.getElementById('prog');
-    let v = 0;
-    const t = setInterval(()=>{
-      v += Math.random()*16 + 8;
-      prog.value = Math.min(100, v);
-      if (v >= 100){
-        clearInterval(t);
-        toggleOverlay('loading', false);
-        startGame();
-      }
-    }, 140);
-  }
-
-  function startGame(){
-    state.scene = 'play';
-    state.camX = 0;
-    state.lives = 2; // display shows lives+1, so set 2 => shows 3 hearts initially
-    state.checkpointX = 60;
-    state.correct.clear(); state.wrong.clear();
-    state.pendingQuestion = null; state.pendingStar = null; state.quizCooldownUntil = 0; state.toast = null; state.particles = [];
-    player.x = 60; player.y = groundY-40; player.vx = 0; player.vy = 0; player.onGround = false;
-    barriers.forEach(b=> b.opened = false);
-    genStarsForStages();
-    lastTime = performance.now();
-    loop();
-  }
-
-  // quiz mechanics & UI handled earlier (showQuiz/answerQuestion)
-
-  // initial setup
-  genStarsForStages();
-  resizeCanvas();
-
-  // small global exposure
-  window.toggleOverlay = toggleOverlay;
-
-  // helper: ensure jump key won't be held across overlay close - track keydown/up
-  window.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Spacebar') jumpHeld = false; });
-  window.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Spacebar') jumpHeld = true; });
-
-  // small helper functions used earlier (clamp defined above)
-
-  // work-around: ensure audio ctx resumed on first user interaction
-  function resumeAudio() { try{ if (audioCtx.state === 'suspended') audioCtx.resume(); }catch(e){} window.removeEventListener('pointerdown', resumeAudio); }
-  window.addEventListener('pointerdown', resumeAudio);
-
-  // expose some debug actions (optional)
-  // window.startGame = startGame;
-
-})();
-</script>
-</body>
-</html>
+//QB
+const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pk=a=>a[r(0,a.length-1)];
+const SN=['Dasar Aritmetika','Dasar Aljabar','Dasar Geometri','Fungsi dan Pola','Logika dan Soal Cerita'];
+const S=[[],[],[],[],[]],T=(s,n,k,f,g)=>S[s].push({s,n,k,f,g});
+// Tahap 1
+T(0,'Penjumlahan dan Pengurangan','Hitung dari kiri ke kanan, satu langkah setiap kali.','a + b − c',()=>{const a=r(20,90),b=r(10,60),c=r(5,40);return[`${a} + ${b} − ${c} = ?`,a+b-c,[`Jumlahkan dulu bilangan pertama dan kedua: ${a} + ${b} = ${a+b}.`,`Kurangi hasilnya dengan ${c} karena operasi dihitung dari kiri: ${a+b} − ${c} = ${a+b-c}.`]]});
+T(0,'Perkalian dan Pembagian','Perkalian dan pembagian dikerjakan dari kiri ke kanan.','a ÷ b × c',()=>{const x=r(2,9),y=r(2,9),z=r(2,9);return[`${x*y} ÷ ${y} × ${z} = ?`,x*z,[`Kerjakan dari kiri: ${x*y} ÷ ${y} = ${x}.`,`Lanjutkan dengan perkalian: ${x} × ${z} = ${x*z}.`]]});
+T(0,'Urutan Operasi','Perkalian dan pembagian dikerjakan lebih dulu daripada penjumlahan dan pengurangan.','× ÷ dahulu, baru + −',()=>{const a=r(5,30),b=r(2,9),c=r(2,9),d=r(1,20);return[`${a} + ${b} × ${c} − ${d} = ?`,a+b*c-d,[`Kerjakan perkalian lebih dulu: ${b} × ${c} = ${b*c}.`,`Sekarang bentuknya ${a} + ${b*c} − ${d}. Jumlahkan: ${a+b*c}.`,`Kurangi: ${a+b*c} − ${d} = ${a+b*c-d}.`]]});
+T(0,'Bilangan Positif dan Negatif','Mengurangi bilangan negatif sama dengan menambah bilangan positif.','a − (−b) = a + b',()=>{const a=r(2,15),b=r(2,15),c=r(2,15);return[`${a} − (−${b}) + (−${c}) = ?`,a+b-c,[`Mengurangi −${b} sama dengan menambah ${b}: ${a} + ${b} = ${a+b}.`,`Menambah (−${c}) sama dengan mengurangi ${c}: ${a+b} − ${c} = ${a+b-c}.`]]});
+T(0,'Pecahan','Pecahan dari suatu bilangan: bagi dengan penyebut, lalu kalikan dengan pembilang.','a/b dari n = n ÷ b × a',()=>{const b=r(2,6),a=r(1,b-1),k=r(2,9),n=b*k;return[`${a}/${b} dari ${n} = ?`,k*a,[`Bagi ${n} dengan penyebut ${b}: ${n} ÷ ${b} = ${k}.`,`Kalikan dengan pembilang ${a}: ${k} × ${a} = ${k*a}.`]]});
+T(0,'Desimal dan Persentase','Persen berarti per seratus: p% dari n = p ÷ 100 × n.','p% dari n = p × n ÷ 100',()=>{const p=5*r(1,10),n=20*r(2,10);return[`${p}% dari ${n} = ?`,p*n/100,[`Ubah ${p}% menjadi pecahan ${p}/100.`,`Hitung ${p} × ${n} = ${p*n}, lalu bagi 100: ${p*n/100}.`]]});
+T(0,'Rasio dan Perbandingan','Rasio a : b membagi total menjadi a + b bagian yang sama besar.','Bagian A = a ÷ (a + b) × total',()=>{const a=r(1,5),b=r(2,6),k=r(2,9);return[`Kelereng Dina dan Edo berbanding ${a} : ${b}. Jumlahnya ${(a+b)*k}. Berapa kelereng Dina?`,a*k,[`Jumlah bagian: ${a} + ${b} = ${a+b}.`,`Satu bagian = ${(a+b)*k} ÷ ${a+b} = ${k}.`,`Kelereng Dina = ${a} × ${k} = ${a*k}.`]]});
+T(0,'Rata-rata','Rata-rata = jumlah semua nilai dibagi banyak nilai.','Rata-rata = jumlah ÷ banyak data',()=>{const m=r(60,90),d=r(1,9);return[`Tiga nilai ulangan: ${m-d}, ${m}, dan ${m+d}. Berapa rata-ratanya?`,m,[`Jumlahkan semua nilai: ${m-d} + ${m} + ${m+d} = ${3*m}.`,`Bagi dengan banyak data (3): ${3*m} ÷ 3 = ${m}.`]]});
+// Tahap 2
+T(1,'Bentuk Aljabar dan Variabel','Variabel adalah huruf pengganti bilangan. Ganti huruf dengan nilainya, lalu hitung.','ax + b dengan x diberi nilai',()=>{const a=r(2,9),b=r(1,15),x=r(2,9);return[`Jika x = ${x}, berapa nilai ${a}x + ${b}?`,a*x+b,[`Ganti x dengan ${x}: ${a} × ${x} + ${b}.`,`Kalikan dulu: ${a*x}, lalu tambah ${b}: ${a*x+b}.`]]});
+T(1,'Suku Sejenis','Suku sejenis punya huruf yang sama, jadi koefisiennya bisa dijumlahkan atau dikurangkan.','ax + bx = (a + b)x',()=>{const a=r(3,9),b=r(2,9),c=r(1,8),d=r(1,9);return[`Sederhanakan ${a}x + ${b}y − ${c}x + ${d}x. Berapa koefisien x?`,a-c+d,[`Suku sejenis dengan x: ${a}x, −${c}x, dan ${d}x.`,`Jumlahkan koefisiennya: ${a} − ${c} + ${d} = ${a-c+d}.`]]});
+T(1,'Sifat Distributif','Kalikan bilangan di luar kurung ke setiap suku di dalam kurung.','a(bx + c) = abx + ac',()=>{const a=r(2,6),b=r(2,5),c=r(1,9),x=r(1,6);return[`Jika x = ${x}, berapa nilai ${a}(${b}x + ${c})?`,a*(b*x+c),[`Kalikan ${a} ke setiap suku: ${a*b}x + ${a*c}.`,`Ganti x = ${x}: ${a*b} × ${x} + ${a*c} = ${a*b*x} + ${a*c}.`,`Hasilnya ${a*b*x+a*c}.`]]});
+T(1,'Persamaan Linear Satu Variabel','Lakukan operasi yang sama pada kedua sisi agar x berdiri sendiri.','ax + b = c → x = (c − b) ÷ a',()=>{const a=r(2,9),x=r(1,12),b=r(1,20),c=a*x+b;return[`${a}x + ${b} = ${c}. Berapa nilai x?`,x,[`Kurangi kedua sisi dengan ${b}: ${a}x = ${c} − ${b} = ${c-b}.`,`Bagi kedua sisi dengan ${a}: x = ${c-b} ÷ ${a} = ${x}.`]]});
+T(1,'Variabel di Dua Sisi','Kumpulkan suku x di satu sisi dan bilangan biasa di sisi lain.','ax + b = cx + d',()=>{const c=r(1,5),a=c+r(1,5),x=r(1,10),b=r(1,15),d=b+(a-c)*x;return[`${a}x + ${b} = ${c}x + ${d}. Berapa nilai x?`,x,[`Pindahkan ${c}x ke kiri: ${a-c}x + ${b} = ${d}.`,`Kurangi ${b}: ${a-c}x = ${d-b}.`,`Bagi ${a-c}: x = ${d-b} ÷ ${a-c} = ${x}.`]]});
+T(1,'SPLDV dengan Eliminasi','Jumlahkan dua persamaan agar salah satu variabel hilang (eliminasi).','x + y = S dan x − y = D → 2x = S + D',()=>{const x=r(3,15),y=r(1,x-1);return[`x + y = ${x+y} dan x − y = ${x-y}. Berapa nilai x?`,x,[`Jumlahkan kedua persamaan sehingga y hilang: 2x = ${x+y} + ${x-y} = ${2*x}.`,`Bagi dengan 2: x = ${2*x} ÷ 2 = ${x}.`]]});
+T(1,'SPLDV dengan Substitusi','Temukan satu variabel, lalu masukkan nilainya ke persamaan lain (substitusi).','2x + y = A dan x + y = B',()=>{const x=r(1,9),y=r(1,9);return[`2x + y = ${2*x+y} dan x + y = ${x+y}. Berapa nilai y?`,y,[`Kurangkan persamaan kedua dari yang pertama: x = ${2*x+y} − ${x+y} = ${x}.`,`Substitusikan x = ${x} ke x + y = ${x+y}: y = ${x+y} − ${x} = ${y}.`]]});
+T(1,'Pangkat dan Akar','Pangkat dua berarti kali diri sendiri. Akar kuadrat adalah kebalikannya.','a² + √(b²) = a × a + b',()=>{const a=r(2,12),b=r(2,12);return[`${a}² + √${b*b} = ?`,a*a+b,[`${a}² = ${a} × ${a} = ${a*a}.`,`√${b*b} = ${b} karena ${b} × ${b} = ${b*b}.`,`Jumlahkan: ${a*a} + ${b} = ${a*a+b}.`]]});
+// Tahap 3
+T(2,'Keliling Persegi Panjang','Keliling adalah jumlah panjang semua sisi.','K = 2 × (p + l)',()=>{const p=r(6,20),l=r(2,p-1);return[`Persegi panjang berukuran ${p} cm × ${l} cm. Berapa kelilingnya (cm)?`,2*(p+l),[`Jumlahkan panjang dan lebar: ${p} + ${l} = ${p+l}.`,`Kalikan 2: 2 × ${p+l} = ${2*(p+l)}.`]]});
+T(2,'Luas Persegi Panjang','Luas adalah banyak petak satuan yang menutupi bangun.','L = p × l',()=>{const p=r(5,20),l=r(3,15);return[`Kebun berbentuk persegi panjang ${p} m × ${l} m. Berapa luasnya (m²)?`,p*l,[`Luas = panjang × lebar.`,`${p} × ${l} = ${p*l}.`]]});
+T(2,'Luas Segitiga','Luas segitiga adalah setengah dari alas kali tinggi.','L = ½ × a × t',()=>{const a=r(3,20),t=2*r(2,10);return[`Alas segitiga ${a} cm dan tingginya ${t} cm. Berapa luasnya (cm²)?`,a*t/2,[`Kalikan alas dan tinggi: ${a} × ${t} = ${a*t}.`,`Ambil setengahnya: ${a*t} ÷ 2 = ${a*t/2}.`]]});
+T(2,'Persegi','Persegi punya empat sisi sama panjang.','s = K ÷ 4, L = s × s',()=>{const s=r(3,15);return[`Keliling sebuah persegi ${4*s} cm. Berapa luasnya (cm²)?`,s*s,[`Sisi = keliling ÷ 4 = ${4*s} ÷ 4 = ${s} cm.`,`Luas = ${s} × ${s} = ${s*s}.`]]});
+T(2,'Pythagoras: Sisi Miring','Pada segitiga siku-siku, kuadrat sisi miring sama dengan jumlah kuadrat dua sisi lainnya.','c² = a² + b²',()=>{const[a,b,c]=pk([[3,4,5],[5,12,13],[8,15,17],[7,24,25]]),k=r(1,3);return[`Segitiga siku-siku punya sisi tegak ${a*k} cm dan ${b*k} cm. Berapa panjang sisi miringnya (cm)?`,c*k,[`c² = ${a*k}² + ${b*k}² = ${a*a*k*k} + ${b*b*k*k} = ${c*c*k*k}.`,`c = √${c*c*k*k} = ${c*k}.`]]});
+T(2,'Pythagoras: Sisi Tegak','Sisi tegak dicari dengan mengurangkan kuadrat sisi yang diketahui dari kuadrat sisi miring.','a² = c² − b²',()=>{const[a,b,c]=pk([[3,4,5],[5,12,13],[8,15,17],[7,24,25]]),k=r(1,3);return[`Sisi miring ${c*k} cm dan salah satu sisi tegak ${b*k} cm. Berapa panjang sisi tegak yang lain (cm)?`,a*k,[`a² = ${c*k}² − ${b*k}² = ${c*c*k*k} − ${b*b*k*k} = ${a*a*k*k}.`,`a = √${a*a*k*k} = ${a*k}.`]]});
+T(2,'Volume Balok','Volume menyatakan isi ruang dalam bangun.','V = p × l × t',()=>{const p=r(3,12),l=r(2,8),t=r(2,9);return[`Balok berukuran ${p} cm × ${l} cm × ${t} cm. Berapa volumenya (cm³)?`,p*l*t,[`Kalikan panjang dan lebar: ${p} × ${l} = ${p*l}.`,`Kalikan dengan tinggi: ${p*l} × ${t} = ${p*l*t}.`]]});
+T(2,'Volume Kubus','Kubus punya rusuk yang semuanya sama panjang.','V = s × s × s',()=>{const s=r(2,9);return[`Rusuk sebuah kubus ${s} cm. Berapa volumenya (cm³)?`,s**3,[`${s} × ${s} = ${s*s}.`,`${s*s} × ${s} = ${s**3}.`]]});
+// Tahap 4
+T(3,'Pola Bilangan','Pola bertambah dengan selisih tetap. Tambahkan selisih itu ke suku terakhir.','Suku berikutnya = suku terakhir + beda',()=>{const a=r(1,15),b=r(2,9);return[`Pola: ${a}, ${a+b}, ${a+2*b}, ${a+3*b}, ... Berapa suku berikutnya?`,a+4*b,[`Selisih tiap suku: ${a+b} − ${a} = ${b}.`,`Tambahkan ke suku terakhir: ${a+3*b} + ${b} = ${a+4*b}.`]]});
+T(3,'Suku ke-n Barisan Aritmetika','Suku ke-n didapat dari suku pertama ditambah (n − 1) kali beda.','Un = a + (n − 1) × b',()=>{const a=r(1,10),b=r(2,8),n=r(6,12);return[`Suku pertama ${a} dan beda ${b}. Berapa suku ke-${n}?`,a+(n-1)*b,[`Un = ${a} + (${n} − 1) × ${b} = ${a} + ${(n-1)*b}.`,`Hasilnya ${a+(n-1)*b}.`]]});
+T(3,'Beda Barisan Aritmetika','Dua suku yang berjarak k suku berselisih k kali beda.','b = (Un − Um) ÷ (n − m)',()=>{const a=r(1,10),b=r(2,8);return[`Pada barisan aritmetika, U3 = ${a+2*b} dan U7 = ${a+6*b}. Berapa bedanya?`,b,[`Dari suku ke-3 ke suku ke-7 ada 4 kali tambah beda.`,`4b = ${a+6*b} − ${a+2*b} = ${4*b}, jadi b = ${4*b} ÷ 4 = ${b}.`]]});
+T(3,'Jumlah n Suku Pertama','Jumlah suku pertama dihitung dengan rumus deret aritmetika.','Sn = n ÷ 2 × (2a + (n − 1)b)',()=>{const a=r(1,8),b=r(1,5),n=2*r(2,5),s=n/2*(2*a+(n-1)*b);return[`Suku pertama ${a} dan beda ${b}. Berapa jumlah ${n} suku pertama?`,s,[`Sn = ${n}/2 × (2 × ${a} + ${n-1} × ${b}).`,`Isi kurung: ${2*a} + ${(n-1)*b} = ${2*a+(n-1)*b}.`,`Kalikan dengan ${n/2}: ${s}.`]]});
+T(3,'Fungsi Linear','Fungsi linear mengubah x menjadi ax + b. Ganti x dengan nilai yang diberikan.','f(x) = ax + b',()=>{const a=r(2,7),b=r(1,9),x=r(2,9);return[`f(x) = ${a}x − ${b}. Berapa f(${x})?`,a*x-b,[`Ganti x dengan ${x}: ${a} × ${x} − ${b}.`,`${a*x} − ${b} = ${a*x-b}.`]]});
+T(3,'Substitusi Nilai Fungsi','Jika nilai fungsi diketahui, selesaikan persamaannya untuk mencari x.','ax + b = c',()=>{const a=r(2,6),b=r(1,9),x=r(2,10),c=a*x+b;return[`f(x) = ${a}x + ${b}. Untuk x berapa f(x) = ${c}?`,x,[`Tulis ${a}x + ${b} = ${c}.`,`${a}x = ${c} − ${b} = ${c-b}.`,`x = ${c-b} ÷ ${a} = ${x}.`]]});
+T(3,'Mencari Fungsi dari Dua Nilai','Dua nilai fungsi cukup untuk menemukan a dan b pada f(x) = ax + b.','a = selisih f ÷ selisih x',()=>{const a=r(2,6),b=r(1,9);return[`f(x) = ax + b, f(1) = ${a+b}, dan f(3) = ${3*a+b}. Berapa f(5)?`,5*a+b,[`Selisih nilai ${3*a+b} − ${a+b} = ${2*a} untuk selisih x sebesar 2, jadi a = ${a}.`,`Dari f(1): ${a} + b = ${a+b}, jadi b = ${b}.`,`f(5) = ${a} × 5 + ${b} = ${5*a+b}.`]]});
+T(3,'Hubungan Antarvariabel','Banyak masalah punya biaya tetap ditambah biaya per satuan waktu.','Biaya = tetap + tarif × waktu',()=>{const a=r(3,9),b=r(5,20),t=r(3,8);return[`Sewa sepeda: biaya tetap ${b} ribu rupiah ditambah ${a} ribu rupiah per jam. Berapa ribu rupiah biaya ${t} jam?`,b+a*t,[`Biaya untuk ${t} jam: ${a} × ${t} = ${a*t}.`,`Tambahkan biaya tetap: ${a*t} + ${b} = ${b+a*t}.`]]});
+// Tahap 5
+T(4,'Soal Cerita: Umur','Ubah cerita menjadi persamaan, lalu selesaikan.','x + kx = (k + 1)x',()=>{const a=r(5,15),k=r(2,4);return[`Umur ayah ${k} kali umur Ani. Jumlah umur mereka ${(k+1)*a} tahun. Berapa umur Ani?`,a,[`Misalkan umur Ani = x, maka umur ayah = ${k}x.`,`Jumlahnya: x + ${k}x = ${k+1}x = ${(k+1)*a}.`,`x = ${(k+1)*a} ÷ ${k+1} = ${a}.`]]});
+T(4,'Rasio dalam Kehidupan Sehari-hari','Jika jumlah dikalikan, semua bahan ikut dikalikan dengan bilangan yang sama.','a₁ ÷ b₁ = a₂ ÷ b₂',()=>{const a=r(2,5),b=r(2,6),k=r(2,5);return[`Resep untuk ${a} orang memakai ${b} gelas tepung. Berapa gelas tepung untuk ${a*k} orang?`,b*k,[`Jumlah orang menjadi ${a*k} ÷ ${a} = ${k} kali lipat.`,`Tepung juga ${k} kali lipat: ${b} × ${k} = ${b*k}.`]]});
+T(4,'Kecepatan, Jarak, dan Waktu','Kecepatan menyatakan jarak yang ditempuh dalam satu satuan waktu.','v = s ÷ t',()=>{const v=r(30,80),t=r(2,6);return[`Bus menempuh ${v*t} km dalam ${t} jam dengan kecepatan tetap. Berapa kecepatannya (km/jam)?`,v,[`Kecepatan = jarak ÷ waktu.`,`${v*t} ÷ ${t} = ${v}.`]]});
+T(4,'Soal Cerita: Belanja','Hitung dulu total pengeluaran, lalu kurangkan dari uang yang dimiliki.','Sisa = uang − jumlah × harga',()=>{const n=r(2,6),h=r(3,9),u=n*h+r(5,30);return[`Rani punya ${u} ribu rupiah. Ia membeli ${n} buku seharga ${h} ribu rupiah per buku. Berapa ribu rupiah sisa uangnya?`,u-n*h,[`Total belanja: ${n} × ${h} = ${n*h} ribu.`,`Sisa uang: ${u} − ${n*h} = ${u-n*h} ribu.`]]});
+T(4,'Membaca Data','Baca semua angka dengan teliti, lalu bandingkan.','Selisih = terbesar − terkecil',()=>{const a=r(10,40),b=r(41,70),c=r(20,60),x=Math.max(a,b,c),n=Math.min(a,b,c);return[`Penjualan roti: Senin ${a}, Selasa ${b}, Rabu ${c}. Berapa selisih penjualan tertinggi dan terendah?`,x-n,[`Terbesar ${x} dan terkecil ${n}.`,`Selisihnya: ${x} − ${n} = ${x-n}.`]]});
+T(4,'Penyelesaian Masalah Bertahap','Pecah masalah besar menjadi langkah-langkah kecil.','Waktu = (awal − akhir) ÷ laju',()=>{const y=r(2,9),m=r(3,12),z=r(10,60),x=z+y*m;return[`Tangki berisi ${x} liter air dan bocor ${y} liter tiap menit. Setelah berapa menit sisa airnya ${z} liter?`,m,[`Air yang harus berkurang: ${x} − ${z} = ${x-z} liter.`,`Waktunya: ${x-z} ÷ ${y} = ${m} menit.`]]});
+T(4,'Persentase dalam Soal Cerita','Diskon p% berarti potongan sebesar p% dari harga awal.','Bayar = harga − p% × harga',()=>{const k=r(2,10),m=r(1,4),h=20*k,p=5*m;return[`Harga sepatu ${h} ribu rupiah dan didiskon ${p}%. Berapa ribu rupiah yang harus dibayar?`,h-k*m,[`Potongan = ${p}% × ${h} = ${p*h/100} ribu.`,`Harga bayar = ${h} − ${k*m} = ${h-k*m} ribu.`]]});
+T(4,'Soal Cerita SPLDV','Beri huruf pada harga yang dicari, lalu pakai persamaan.','2b + p = A dan b + p = B → b = A − B',()=>{const b=r(4,12),p=r(2,9);return[`2 buku dan 1 pulpen harganya ${2*b+p} ribu rupiah. 1 buku dan 1 pulpen harganya ${b+p} ribu rupiah. Berapa ribu rupiah harga 1 buku?`,b,[`Misalkan buku = b dan pulpen = p: 2b + p = ${2*b+p} dan b + p = ${b+p}.`,`Kurangkan kedua persamaan: b = ${2*b+p} − ${b+p} = ${b}.`]]});
+const genQ=(s,i=r(0,7))=>{const t=S[s][i],[q,a,st]=t.g();return{s,i,t,q,a,st}};
+//QE
+/* ===== Kartu ===== */
+const CD=[],C=(n,t,c,tp,o,ic)=>CD.push({id:CD.length,n,t,c,tp,ic,d:0,sh:0,hl:0,dr:0,en:0,pen:0,cyc:0,h:1,p:0,self:0,...o});
+C('Serangan Bilangan Bulat','a',1,0,{d:3},'+');C('Sambaran Aljabar','a',2,1,{d:5},'x');C('Tebasan Pythagoras','a',3,2,{d:7,p:1},'Δ');C('Ledakan Pangkat','a',3,1,{d:8},'²');
+C('Gelombang Fungsi','a',2,3,{d:3,h:2},'ƒ');C('Panah Barisan','a',1,3,{d:2,dr:1},'…');C('Pukulan Persentase','a',2,0,{d:4,en:1},'%');
+C('Perisai Pecahan','d',1,0,{sh:4},'½');C('Dinding Geometri','d',2,2,{sh:8},'▢');C('Tangkisan Logika','d',1,4,{sh:3,dr:1},'∴');C('Penjaga Rasio','d',2,0,{sh:5,hl:2},':');
+C('Pemulihan Aritmetika','h',2,0,{hl:6},'×');C('Tetes Desimal','h',1,0,{hl:3},'.');C('Isi Ulang Persamaan','h',1,1,{en:3},'=');
+C('Pustaka Variabel','k',1,1,{dr:2},'n');C('Uji Nalar','k',2,4,{d:4,hl:4},'?');C('Kilat Substitusi','k',2,1,{d:7},'↯');C('Kombinasi Eliminasi','k',3,1,{d:6,sh:6},'⊕');
+C('Pembeku Waktu','s',2,3,{pen:2},'Ω');C('Putar Dek','s',1,4,{cyc:4},'⟳');C('Meteor Bilangan','s',4,4,{d:12,self:3},'★');
+const TN={a:'Serangan',d:'Pertahanan',h:'Pemulihan',k:'Pengetahuan',s:'Khusus'};
+const desc=c=>[c.d&&`Serang ${c.d}${c.h>1?' ×'+c.h:''}${c.p?' (tembus perisai)':''}`,c.sh&&`Perisai ${c.sh}`,c.hl&&`Pulih ${c.hl} HP`,c.en&&`+${c.en} energi`,c.dr&&`Tarik ${c.dr} kartu`,c.pen&&`Lawan −${c.pen} energi`,c.cyc&&`Buang tangan, tarik ${c.cyc}`].filter(Boolean).join('. ')+'.';
+const risk=c=>c.t=='k'||c.t=='s'?(c.self?`Jika salah: tidak berefek dan kamu terkena ${c.self} kerusakan.`:'Jika salah: tidak berefek.'):'Jika salah: efek hanya separuh.';
+const CH=(c,o={})=>`<div class="card t${c.t}${o.s?' sel':''}${o.off?' off':''}${o.sm?' sm':''}"${o.k>=0?` data-a=pick data-v=${o.k}`:''}><i class=cc>${c.c}</i><div class=ci>${c.ic}</div><b>${c.n}</b><em>${TN[c.t]}</em><p>${desc(c)}</p></div>`;
+/* ===== Karakter ===== */
+const HR={n:{nm:'Numeris',ds:'Pelajar teliti berkacamata cyan. Tenang dan penuh hitungan.'},a:{nm:'Arsiparis',ds:'Penjaga arsip rumus berjubah ungu. Cerdik dan suka strategi.'}};
+const AV=k=>{const P={n:['#e9b98f','#1b2b4d','#2563c9','#57D9F5'],a:['#f0c8a0','#5b2a86','#7e3fc4','#F4C96B'],o:['#b9c3d6','#2a0f14','#a83245','#ff6b6b']}[k];
+return `<svg viewBox="0 0 100 120"><g class=bob><path d="M18 120c0-26 14-38 32-38s32 12 32 38z" fill="${P[2]}"/><path d="M40 84l10 14 10-14z" fill="${P[3]}"/><circle cx=50 cy=48 r=26 fill="${P[0]}"/>${k=='a'?`<path d="M22 56C16 24 34 14 50 14s34 10 28 42c-2-16-12-24-28-24s-26 8-28 24z" fill="${P[1]}"/><circle cx=76 cy=30 r=7 fill="${P[3]}"/>`:k=='n'?`<path d="M24 46C22 22 38 16 50 16s28 6 26 30c-6-12-16-16-26-16s-20 4-26 16z" fill="${P[1]}"/>`:`<path d="M22 44 28 14l14 14 8-16 8 16 14-14 6 30c-12-14-44-14-56 0z" fill="${P[1]}"/>`}<circle cx=41 cy=52 r=3.5 fill="#101827"/><circle cx=59 cy=52 r=3.5 fill="#101827"/>${k=='n'?'<rect x=34 y=46 width=14 height=12 rx=3 fill=none stroke=#57D9F5 stroke-width=2 /><rect x=52 y=46 width=14 height=12 rx=3 fill=none stroke=#57D9F5 stroke-width=2 />':''}<path d="M42 64q8 7 16 0" stroke="#101827" stroke-width=2.5 fill=none stroke-linecap=round /></g></svg>`};
+/* ===== Progres & penyimpanan ===== */
+const SV={m:0,w:0,c:0,x:0,xp:0,t:{},snd:1,anim:1,seen:0};
+try{Object.assign(SV,JSON.parse(localStorage.fundamath))}catch{}
+const save=()=>{try{localStorage.fundamath=JSON.stringify(SV)}catch{}};
+const $=id=>document.getElementById(id),rc=e=>e.getBoundingClientRect(),shuf=a=>{for(let i=a.length-1;i>0;i--){const j=r(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const mst=n=>{const[o,b]=SV.t[n]||[0,0],t=o+b;return t?(o>=3&&o/t>=.7?'Dikuasai':b>o?'Perlu diulang':'Sedang dipelajari'):'Belum dicoba'};
+/* ===== Audio ===== */
+let AC;const snd=n=>{if(!SV.snd)return;try{AC=AC||new AudioContext();const M={sel:[[520,.07]],ok:[[600,.1],[800,.1],[1000,.15]],bad:[[220,.18],[170,.22]],hit:[[140,.12,'sawtooth']],use:[[400,.06],[600,.08]],win:[[523,.15],[659,.15],[784,.15],[1047,.4]],lose:[[330,.25],[260,.25],[196,.45]],sh:[[700,.15,'triangle']]}[n];let t=AC.currentTime;for(const[f,d,w]of M){const o=AC.createOscillator(),g=AC.createGain();o.type=w||'sine';o.frequency.value=f;g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d);t+=d}}catch{}};
+/* ===== Animasi ===== */
+let EP=0,tt;const W=ms=>{const e=EP;return new Promise((a,b)=>setTimeout(()=>e==EP?a():b(),SV.anim?ms:20))};
+const toast=x=>{const e=$('ban');e.textContent=x;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1500)};
+const fly=(h,a,b)=>{if(!SV.anim)return Promise.resolve();const p=a.getBoundingClientRect?rc(a):a,q=rc(b),e=document.createElement('div');e.className='fly';e.innerHTML=h;e.style.cssText=`left:${p.left}px;top:${p.top}px;width:${p.width}px;height:${p.height}px`;document.body.append(e);return e.animate([{transform:'none'},{transform:`translate(${q.left+q.width/2-p.left-p.width/2}px,${q.top+q.height/2-p.top-p.height/2}px) scale(${q.width/p.width})`}],{duration:450,easing:'ease-in-out',fill:'forwards'}).finished.then(()=>e.remove())};
+const proj=(s,o)=>{snd('use');if(!SV.anim)return Promise.resolve();const a=rc($('av'+s)),b=rc($('av'+o)),e=document.createElement('div'),x=q=>q.left+q.width/2-14,y=q=>q.top+q.height/2-14;e.className='pj p'+s;document.body.append(e);return e.animate([{transform:`translate(${x(a)}px,${y(a)}px)`},{transform:`translate(${x(b)}px,${y(b)}px) scale(1.6)`}],{duration:420,easing:'ease-in',fill:'forwards'}).finished.then(()=>e.remove())};
+const fl=(t,x,c)=>{const e=document.createElement('div'),b=rc($('av'+t));e.className='fl '+c;e.textContent=x;e.style.cssText=`left:${b.left+b.width/2}px;top:${b.top+10}px`;document.body.append(e);setTimeout(()=>e.remove(),1000)};
+const ring=(t,c)=>{const e=$('av'+t);e.classList.add(c);setTimeout(()=>e.classList.remove(c),800)};
+/* ===== Status permainan ===== */
+let G=null,P={hero:'n'},DF=1,Q,LQ,CF;
+const lg=x=>G.lg.push(x);
+function draw(s,n){for(;n>0&&G.hd[s].length<7;n--){if(!G.dk[s].length){if(!G.dc[s].length)break;G.dk[s]=shuf(G.dc[s]);G.dc[s]=[]}G.hd[s].push(G.dk[s].pop())}}
+function startGame(){EP++;const e=EP,dk=()=>shuf([...CD,...CD].map(c=>c.id));
+G={diff:DF,hero:P.hero,hp:[30,30],en:[0,0],sh:[0,0],pen:[0,0],dk:[dk(),dk()],hd:[[],[]],dc:[[],[]],act:[null,null],hs:[[],[]],turn:-1,rd:0,busy:true,sel:-1,ok:0,bad:0,wr:{},lt:{},lg:[],over:0};
+draw(0,4);draw(1,4);
+const reg=i=>`<div class="rg r${i}"><div class=who><div class=av id=av${i}>${AV(i?'o':G.hero)}</div><div class=bars><b>${i?'Baron Nol ('+['MUDAH','SEDANG','SULIT'][DF]+')':HR[G.hero].nm}</b><div class=hp><i id=hb${i}></i><span id=ht${i}></span></div><div class=en id=en${i}></div></div></div><div class=slots id=sl${i}></div><div class=piles><div class=pile id=dk${i}></div><div class=pile id=dc${i}></div></div></div>`;
+$('game').innerHTML=`<div id=arena>${reg(1)}<div class=mid><div class=plane></div><div class=main id=m1></div><div class=main id=m0></div><div class=tb><button class="b s" data-a=log>CATATAN</button><button class="b s" data-a=help>BANTUAN</button><button class="b s" data-a=set>PENGATURAN</button><button class="b s" data-a=quit>MENYERAH</button></div></div>${reg(0)}<div id=info></div><div id=hand></div></div>`;
+closeOv();go('game');render();
+if(!SV.seen){SV.seen=1;save();help()}
+setTimeout(()=>{if(e==EP)startTurn(0).catch(()=>{})},500)}
+function render(){if(!G)return;
+for(const i of[0,1]){const g=G;
+$('hb'+i).style.width=Math.max(0,g.hp[i])*100/30+'%';
+$('ht'+i).textContent=`HP ${Math.max(0,g.hp[i])}/30${g.sh[i]?'  ·  Perisai '+g.sh[i]:''}`;
+$('en'+i).innerHTML=`<small>Energi ${g.en[i]}/10${i?' · Kartu lawan '+g.hd[1].length:''}</small>`+'<u class=on></u>'.repeat(g.en[i])+'<u></u>'.repeat(10-g.en[i]);
+$('dk'+i).innerHTML=`Dek<b>${g.dk[i].length}</b>`;$('dc'+i).innerHTML=`Buangan<b>${g.dc[i].length}</b>`;
+$('sl'+i).innerHTML=[0,1,2].map(k=>g.hs[i][k]!=null?CH(CD[g.hs[i][k]],{sm:1}):'<div class="card sm ph">Pendukung</div>').join('');
+$('m'+i).innerHTML=g.act[i]!=null?CH(CD[g.act[i]]):'Kartu utama'+(i?' lawan':'')}
+$('hand').innerHTML=G.hd[0].map((id,k)=>CH(CD[id],{k,s:k==G.sel,off:CD[id].c>G.en[0]})).join('');
+const c=G.sel>=0?CD[G.hd[0][G.sel]]:null;
+$('info').innerHTML=`<span>${G.over?'Pertandingan selesai.':G.turn?'Giliran lawan…':c?`<b>${c.n}</b> — ${desc(c)} ${risk(c)} Biaya ${c.c} energi.`:`Giliranmu · Putaran ${G.rd} · Pilih kartu di tanganmu.`}</span><span>${c?'<button class=b data-a=use>GUNAKAN KARTU</button>':''}<button class="b s" data-a=end>AKHIRI GILIRAN</button></span>`}
+async function startTurn(s){G.turn=s;if(!s)G.rd++;G.sh[s]=0;G.sel=-1;G.en[s]=Math.max(0,Math.min(10,3+((G.rd-1)>>1))-G.pen[s]);G.pen[s]=0;draw(s,1);render();toast(s?'GILIRAN LAWAN':'GILIRANMU');await W(900);if(s)await ai();else{G.busy=false;render()}}
+function chk(){if(G.hp[0]>0&&G.hp[1]>0)return false;if(!G.over){G.over=1;G.busy=true;const e=EP;setTimeout(()=>e==EP&&finish(),600)}return true}
+async function hit(t,n,p){let a=0;if(!p&&G.sh[t]){a=Math.min(G.sh[t],n);G.sh[t]-=a;n-=a}G.hp[t]-=n;fl(t,n?'-'+n:'Terblokir',n?'dm':'sh');if(a&&!G.sh[t])fl(t,'Perisai pecah','sh');ring(t,'hit');$('arena').classList.add('shk');setTimeout(()=>$('arena').classList.remove('shk'),300);snd('hit');render();await W(380)}
+async function eff(s,c,ok){const o=1-s,f=v=>ok?v:c.t=='k'||c.t=='s'?0:v>>1,d=f(c.d),sh=f(c.sh),hl=f(c.hl),dr=f(c.dr),en=f(c.en);
+if(!ok&&c.self)await hit(s,c.self,1);
+for(let i=0;i<c.h&&d;i++){await proj(s,o);await hit(o,d,c.p)}
+if(sh){G.sh[s]=Math.min(20,G.sh[s]+sh);fl(s,'+'+sh+' perisai','sh');ring(s,'sh');snd('sh');render();await W(400)}
+if(hl){const n=Math.min(hl,30-G.hp[s]);G.hp[s]+=n;fl(s,'+'+n+' HP','hl');ring(s,'hl');snd('ok');render();await W(400)}
+if(en){G.en[s]=Math.min(10,G.en[s]+en);fl(s,'+'+en+' energi','en');render();await W(300)}
+if(dr){draw(s,dr);fl(s,'Tarik kartu','en');render();await W(300)}
+if(ok&&c.pen){G.pen[o]+=c.pen;fl(o,'−'+c.pen+' energi','dm');await W(300)}
+if(ok&&c.cyc){G.dc[s].push(...G.hd[s]);G.hd[s]=[];draw(s,c.cyc);render();await W(300)}
+if(!ok&&!d&&!sh&&!hl&&!en&&!dr&&!c.self)fl(s,'Gagal','dm')}
+async function playCard(s,k,ok){const id=G.hd[s][k],c=CD[id],from=rc(s?$('dk1'):$('hand').children[k]);
+G.hd[s].splice(k,1);G.en[s]-=c.c;G.sel=-1;render();lg(`${s?'Lawan':'Kamu'} memakai ${c.n}${ok?'':' (belum tepat)'}.`);
+snd('use');await fly(CH(c),from,$('m'+s));
+if(G.act[s]!=null)G.hs[s]=[G.act[s],...G.hs[s]].slice(0,3);
+G.act[s]=id;render();$('m'+s).classList.add('glow');setTimeout(()=>$('m'+s).classList.remove('glow'),800);
+await eff(s,c,ok);await W(250);
+await fly(CH(c),$('m'+s),$('dc'+s));G.dc[s].push(id);render()}
+/* ===== Lawan AI ===== */
+const sc=c=>{const d=G.diff,hp=G.hp[1],e=G.en[1];if(!d)return Math.random();
+let v=c.d*c.h+Math.min(c.hl,30-hp)*(hp<14?2:.7)+c.sh*(hp<12?1.4:.6)+c.dr*1.2+Math.min(c.en,10-e)*1.2+c.pen*1.5-c.self*(d>1&&hp<=c.self+4?99:1);
+if(d>1&&c.d*c.h>=G.hp[0]+(c.p?0:G.sh[0]))v+=99;if(d>1&&c.c==e)v*=1.25;
+return v<=0?-1:v/(c.c+.5)+Math.random()*(d>1?.1:1.2)};
+async function ai(){for(let n=0;n<9;n++){const e=G.en[1],ops=G.hd[1].map((id,k)=>({k,c:CD[id]})).filter(x=>x.c.c<=e);ops.forEach(x=>x.sc=sc(x.c));ops.sort((a,b)=>b.sc-a.sc);const b=ops[0];
+if(!b||b.sc<0||(!G.diff&&n>1&&Math.random()<.3))break;await W(500);await playCard(1,b.k,true);if(chk())return;await W(300)}
+await startTurn(0)}
+/* ===== Soal & jawaban ===== */
+const qOpen=q=>{Q=q;ov(`<div class=pn><h3>${SN[q.s]} · ${q.t.n}</h3><p class=qt>${q.q}</p><p class=rk>${q.mode=='play'?risk(CD[q.cid]):'Soal latihan: tidak memengaruhi pertarungan.'}</p><input id=ans inputmode=decimal autocomplete=off placeholder="Tulis jawabanmu di sini"><p id=msg></p><div class=bt><button class="b s" data-a=cancel>BATAL</button><button class=b data-a=ans>JAWAB</button></div></div>`,'top');setTimeout(()=>$('ans')?.focus(),60)};
+function rec(q,ok){const t=SV.t[q.t.n]=SV.t[q.t.n]||[0,0];t[ok?0:1]++;SV[ok?'c':'x']++;SV.xp+=ok?10:4;if(q.mode=='play'&&G){G[ok?'ok':'bad']++;G[ok?'lt':'wr'][q.t.n]=1}save()}
+function ans(){const q=Q;if(!q||q.lk)return;const v=$('ans').value.trim().replace(',','.').replace('−','-');
+if(v===''||isNaN(+v)){$('msg').textContent='Tulis jawaban berupa angka dulu ya.';return}
+q.lk=1;const ok=Math.abs(+v-q.a)<1e-6;rec(q,ok);closeOv();
+if(q.mode=='play')resolve(q,ok,v).catch(()=>{});
+else if(ok){snd('ok');LQ=q;ov(`<div class=pn><h3>JAWABAN BENAR</h3><p class=qt>Tepat! Kamu sudah paham materi ini.</p><div class=bt><button class="b s" data-a=sim>SOAL LAIN</button><button class=b data-a=cont>${q.lbl}</button></div></div>`,'top')}
+else{snd('bad');learn(q,v)}}
+async function resolve(q,ok,v){await playCard(0,q.k,ok);if(ok){snd('ok');toast('Tepat! Kartu berhasil diaktifkan.');q.fin()}else{await W(400);learn(q,v)}}
+function learn(q,v){LQ=q;ov(`<div class=pn><h3>WAKTU BELAJAR</h3><h4>${SN[q.s]} · ${q.t.n}</h4><p class=qt>${q.q}</p><p>Jawabanmu: <b class=bd>${v}</b> · Jawaban yang benar: <b class=gd>${q.a}</b></p><p>${q.t.k}</p><p>Rumus: <code>${q.t.f}</code></p><ol>${q.st.map(x=>`<li>${x}</li>`).join('')}</ol><p><b>Kesimpulan:</b> jawabannya adalah ${q.a}.</p><p class=rk>Belum tepat. Pelajari langkahnya, lalu coba lagi pada soal berikutnya.</p><div class=bt><button class="b s" data-a=sim>COBA SOAL SERUPA</button><button class=b data-a=cont>${q.lbl}</button></div></div>`,'top')}
+function finish(){const w=G.hp[1]<=0,wr=Object.keys(G.wr),lt=Object.keys(G.lt);SV.m++;if(w)SV.w++;SV.xp+=w?30:10;save();snd(w?'win':'lose');
+ov(`<div class="pn ${w?'w':'l'}"><h3>${w?'KEMENANGAN':'KEKALAHAN'}</h3><p class=qt>${w?'Kamu menaklukkan Baron Nol!':'Belum berhasil kali ini, tetapi kamu sudah belajar.'}</p><p>Jawaban benar: <b class=gd>${G.ok}</b> · Jawaban belum tepat: <b class=bd>${G.bad}</b> · Putaran: ${G.rd}</p><p>${lt.length?'Materi yang kamu kuasai: '+lt.join(', ')+'.':''}</p><p>${wr.length?'Materi untuk diulang: '+wr.join(', ')+'.':'Semua soal kamu jawab dengan tepat!'}</p><div class=bt><button class="b s" data-a=menu>MENU UTAMA</button><button class=b data-a=start data-v=${G.diff}>${w?'MAIN LAGI':'COBA LAGI'}</button></div></div>`,'mid'+(w?' win':''))}
+/* ===== Tampilan & navigasi ===== */
+function ov(h,p='top'){$('ov').className=p;$('ov').innerHTML='<div class=bk></div>'+h}
+const closeOv=()=>{$('ov').className='';$('ov').innerHTML=''};
+const cf=(m,f)=>{CF=f;ov(`<div class=pn><h3>Konfirmasi</h3><p>${m}</p><div class=bt><button class="b s" data-a=x>BATAL</button><button class=b data-a=yes>YA</button></div></div>`,'mid')};
+const help=()=>ov(`<div class=pn><h3>CARA BERMAIN</h3><ol><li>Kamu dan lawan punya 30 HP. Habiskan HP lawan untuk menang.</li><li>Setiap giliran kamu mendapat energi dan menarik satu kartu.</li><li>Pilih kartu, tekan <b>GUNAKAN KARTU</b>, lalu jawab soal matematikanya.</li><li>Jawaban benar membuat kartu bekerja penuh. Jawaban belum tepat membuat efek melemah atau gagal, dan kamu mendapat pembahasan.</li><li><b>BATAL</b> mengembalikan kartu tanpa mengurangi energi.</li><li>Tekan <b>AKHIRI GILIRAN</b> jika energi atau kartumu sudah cukup.</li></ol><p class=nt>Perisai hilang di awal gilirannya sendiri. Kartu Serangan, Pertahanan, dan Pemulihan bekerja separuh jika jawaban salah. Kartu Pengetahuan dan Khusus tidak berefek jika jawaban salah.</p><div class=bt><button class=b data-a=x>MENGERTI</button></div></div>`,'mid');
+const apply=()=>document.body.classList.toggle('noanim',!SV.anim);
+const set=()=>{apply();ov(`<div class=pn><h3>PENGATURAN</h3><p>Suara: <button class="b s" data-a=tg data-v=snd>${SV.snd?'NYALA':'MATI'}</button></p><p>Animasi: <button class="b s" data-a=tg data-v=anim>${SV.anim?'PENUH':'DIKURANGI'}</button></p><p class=nt>Animasi dikurangi membuat permainan lebih ringan.</p><div class=bt><button class="b s" data-a=rst>HAPUS PROGRES</button><button class=b data-a=x>TUTUP</button></div></div>`,'mid')};
+const go=id=>{document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id==id));({char:rChar,diff:rDiff,lib:rLib,prog:rProg}[id]||(()=>{}))()};
+const rChar=()=>$('char').innerHTML=`<h2>Pilih Karakter</h2><div class=row>${Object.keys(HR).map(k=>`<div class="hc${P.hero==k?' sel':''}" data-a=hero data-v=${k}><div class=hv>${AV(k)}</div><b>${HR[k].nm}</b><p>${HR[k].ds}</p></div>`).join('')}</div><p class=nt>Karakter hanya mengubah penampilan, bukan kekuatan.</p><div class=row><button class="b s" data-a=go data-v=menu>KEMBALI</button><button class=b data-a=go data-v=diff>PILIH KARAKTER</button></div>`;
+const DD=['MUDAH|Lawan memilih kartu hampir acak.','SEDANG|Lawan menghitung serangan, pertahanan, dan energi.','SULIT|Lawan menghemat energi dan mencari kesempatan menang.'];
+const rDiff=()=>$('diff').innerHTML=`<h2>Pilih Tingkat Kesulitan</h2><div class=row>${DD.map((x,i)=>`<div class=hc><button class=b data-a=start data-v=${i}>${x.split('|')[0]}</button><p>${x.split('|')[1]}</p></div>`).join('')}</div><button class="b s" data-a=go data-v=char>KEMBALI</button>`;
+const rLib=()=>$('lib').innerHTML=`<h2>Perpustakaan Materi</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button>`+S.map((g,s)=>`<h3 class=sh>Tahap ${s+1}: ${SN[s]}</h3><p class=nt style="align-self:flex-start">Kartu terkait: ${CD.filter(c=>c.tp==s).map(c=>c.n).join(', ')}</p><div class=gr>${g.map((t,i)=>{const[q,a,st]=t.g();return `<div class=tc><b>${t.n}</b><p>${t.k}</p><code>${t.f}</code><details><summary>Contoh soal</summary><p>${q} <b>Jawaban: ${a}</b></p><ol>${st.map(x=>`<li>${x}</li>`).join('')}</ol></details><small>Status: ${mst(t.n)}</small><button class="b s" data-a=prac data-v=${s},${i}>LATIH MATERI INI</button></div>`}).join('')}</div>`).join('');
+const rProg=()=>{const tot=SV.c+SV.x,A=S.flat(),tr=n=>SV.t[n.n]||[0,0],ch=a=>a.length?a.map(t=>`<code>${t.n}</code>`).join(' '):'<span class=nt>Belum ada.</span>';
+$('prog').innerHTML=`<h2>Progres Belajar</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button><div class=st><div><b>${SV.m}</b>Pertandingan</div><div><b>${SV.w}</b>Kemenangan</div><div><b>${SV.c}</b>Jawaban benar</div><div><b>${SV.x}</b>Jawaban belum tepat</div><div><b>${tot?Math.round(SV.c*100/tot):0}%</b>Ketepatan</div><div><b>${1+(SV.xp/100|0)}</b>Tingkat (${SV.xp} XP)</div></div><div class=tc style="width:min(800px,100%)"><b>Materi yang sering salah</b><p>${ch(A.filter(t=>tr(t)[1]>0).sort((a,b)=>tr(b)[1]-tr(a)[1]).slice(0,6))}</p><b>Materi yang perlu diulang</b><p>${ch(A.filter(t=>mst(t.n)=='Perlu diulang'))}</p><b>Materi yang sudah dipelajari (${A.filter(t=>tr(t)[0]+tr(t)[1]>0).length} dari ${A.length})</b><p>${ch(A.filter(t=>tr(t)[0]+tr(t)[1]>0))}</p></div><p class=nt>Kamu tetap mendapat pengalaman belajar saat menjawab salah dan mempelajari pembahasannya.</p>`};
+/* ===== Aksi ===== */
+const A={go,help,set,x:closeOv,sim(){qOpen({...genQ(LQ.s,LQ.i),mode:'prac',fin:LQ.fin,back:LQ.fin,lbl:LQ.lbl})},
+hero(v){P.hero=v;rChar()},start(v){DF=+v;startGame()},
+tg(v){SV[v]=SV[v]?0:1;save();set()},
+pick(v){if(G.busy||G.turn)return;const k=+v,c=CD[G.hd[0][k]];if(c.c>G.en[0]){toast('Energi tidak cukup untuk kartu ini.');snd('bad');return}G.sel=G.sel==k?-1:k;snd('sel');render()},
+use(){if(G.busy||G.turn||G.sel<0)return;const c=CD[G.hd[0][G.sel]];G.busy=true;qOpen({...genQ(c.tp),mode:'play',k:G.sel,cid:c.id,lbl:'LANJUTKAN PERTARUNGAN',back:()=>{G.busy=false;render()},fin:()=>{if(!chk()){G.busy=false;render()}}})},
+end(){if(G.busy||G.turn)return;G.busy=true;G.sel=-1;render();startTurn(1).catch(()=>{})},
+ans,cancel(){closeOv();Q&&Q.back&&Q.back()},cont(){closeOv();LQ.fin()},
+prac(v){const[s,i]=v.split(',').map(Number),n=()=>{};qOpen({...genQ(s,i),mode:'prac',fin:n,back:n,lbl:'TUTUP'})},
+log(){ov(`<div class=pn><h3>CATATAN PERTEMPURAN</h3>${G.lg.slice(-14).reverse().map(x=>`<p>${x}</p>`).join('')||'<p>Belum ada kejadian.</p>'}<div class=bt><button class=b data-a=x>TUTUP</button></div></div>`,'mid')},
+quit(){cf('Menyerah dan kembali ke menu utama? Pertandingan ini tidak dihitung.',()=>{EP++;closeOv();go('menu')})},
+menu(){EP++;closeOv();go('menu')},yes(){CF&&CF()},
+rst(){cf('Hapus semua progres belajar?',()=>{Object.assign(SV,{m:0,w:0,c:0,x:0,xp:0,t:{}});save();set()})}};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.v,t)});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='ans')ans()});
+$('deco').innerHTML=[...'+−×÷=π√∑ƒ²%x'].map(c=>`<span style="left:${r(2,96)}%;animation-delay:-${r(0,12)}s;font-size:${r(18,48)}px">${c}</span>`).join('')+[3,8,16].map((c,i)=>`<div class="dc d${i}">${CH(CD[c])}</div>`).join('');
+apply();
+</script></body></html>
