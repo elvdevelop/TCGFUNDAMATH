@@ -1,83 +1,113 @@
 <!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TCG FUNDAMATH</title>
-<style>
-:root{--bg:#101827;--ar:#193D72;--cy:#57D9F5;--rd:#7F2834;--go:#F4C96B;--wh:#F3F5F8;--gr:#8994A7;--ok:#63D9A1;--cw:clamp(82px,12.5vh,124px)}
+ <style>
+:root{--bg:#262a30;--ar:#45364F;--cy:#75BFC0;--rd:#8a4a56;--go:#C9A96E;--wh:#E9E1D0;--gr:#a6a2a8;--ok:#8fcfb4;--cw:clamp(76px,11.5vh,120px)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%;background:var(--bg);color:var(--wh);font:15px/1.4 system-ui,"Segoe UI",Arial,sans-serif;overflow:hidden;user-select:none}
 body{position:relative}button{font:inherit;cursor:pointer;border:0;color:inherit}
 .scr{display:none;position:absolute;inset:0;overflow:auto}.scr.on{display:flex}
-.pg{flex-direction:column;align-items:center;gap:14px;padding:22px;background:radial-gradient(#193D72,#101827)}
-.b{display:inline-block;background:linear-gradient(#ffe29a,#F4C96B);color:#101827;font-weight:800;padding:11px 24px;border-radius:12px;box-shadow:0 4px 0 #a87f2d;transition:.15s}
-.b:hover{filter:brightness(1.1);transform:translateY(-2px)}.b:active{transform:translateY(2px);box-shadow:0 1px 0 #a87f2d}
-.b.s{background:linear-gradient(#27427a,#193D72);color:var(--wh);border:2px solid var(--cy);box-shadow:0 4px 0 #0a1a44}
+.pg{flex-direction:column;align-items:center;gap:14px;padding:22px;background:radial-gradient(#45364F,#262a30)}
+.b{display:inline-block;background:linear-gradient(#f0dfb4,#C9A96E);color:#262a30;font-weight:800;padding:11px 24px;border-radius:12px;box-shadow:0 4px 0 #8a6f3c;transition:.15s}
+.b:hover{filter:brightness(1.1);transform:translateY(-2px)}.b:active{transform:translateY(2px);box-shadow:0 1px 0 #8a6f3c}
+.b.s{background:linear-gradient(#5a4668,#45364F);color:var(--wh);border:2px solid var(--cy);box-shadow:0 4px 0 #241c2c}
 .nt{color:var(--gr);font-size:13px}h2{color:var(--go);font-size:28px}
-#menu{align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#193D72,#101827 70%);overflow:hidden}
+#menu{align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#45364F,#262a30 70%);overflow:hidden}
 .mc{position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;align-items:center}.mc .b{width:290px}
-h1{font-size:clamp(34px,7vw,76px);font-weight:900;letter-spacing:2px;background:linear-gradient(#fff,var(--cy) 55%,#2a7bd6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #0a1a44)}
+h1{font-size:clamp(34px,7vw,76px);font-weight:900;letter-spacing:2px;background:linear-gradient(#fff,var(--cy) 55%,#A895CE);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #241c2c)}
 .sl{color:var(--go);letter-spacing:2px;font-style:italic;margin-bottom:12px}
-.deco span{position:absolute;bottom:-60px;color:#57d9f544;animation:drift 12s linear infinite}
+.deco span{position:absolute;bottom:-60px;color:#75BFC044;animation:drift 12s linear infinite}
 @keyframes drift{to{transform:translateY(-115vh) rotate(180deg)}}
 .dc{position:absolute;animation:spin 6s ease-in-out infinite alternate}.d0{left:8%;top:30%}.d1{right:9%;top:20%}.d2{left:66%;bottom:6%}
 @keyframes spin{from{transform:rotate(-14deg)}to{transform:rotate(14deg) translateY(-18px)}}
 .row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:center}
-.hc{width:240px;padding:14px;border-radius:16px;background:#142a52;border:3px solid #fff2;cursor:pointer;text-align:center;transition:.2s}
-.hc:hover,.hc.sel{border-color:var(--go);box-shadow:0 0 24px #f4c96b88;transform:translateY(-4px)}
-.hv{width:150px;margin:auto;aspect-ratio:5/6}.hv svg,.av svg{width:100%;height:100%}
+.hc{width:240px;padding:14px;border-radius:16px;background:#3a3044;border:3px solid #fff2;cursor:pointer;text-align:center;transition:.2s}
+.hc:hover,.hc.sel{border-color:var(--go);box-shadow:0 0 24px #C9A96E88;transform:translateY(-4px)}
+.hv{width:150px;margin:auto;aspect-ratio:2/3}.hv svg,.av svg{width:100%;height:100%}
 .bob{animation:bob 2.4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-3px)}}
 .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;width:min(1100px,100%)}
-.tc{background:#142a52;border:1px solid #57d9f555;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px;user-select:text}
+.tc{background:#3a3044;border:1px solid #75BFC055;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px;user-select:text}
 .sh{align-self:flex-start;color:var(--go)}.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;width:min(800px,100%)}
-.st div{background:#142a52;border-radius:12px;padding:12px;text-align:center}.st b{display:block;font-size:26px;color:var(--cy)}
-code{background:#0b1126;padding:2px 6px;border-radius:6px;color:var(--cy)}
+.st div{background:#3a3044;border-radius:12px;padding:12px;text-align:center}.st b{display:block;font-size:26px;color:var(--cy)}
+code{background:#1a1820;padding:2px 6px;border-radius:6px;color:var(--cy)}
 /* arena */
 #arena{position:absolute;inset:0;display:flex;flex-direction:column}
 .rg{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 16px;flex:1 1 0;min-height:0}
-.r1{background:linear-gradient(#3a0f19,#7F2834);border-bottom:3px solid #c05363}
-.r0{background:linear-gradient(#193D72,#101c3a);border-top:3px solid var(--cy)}
+.r1{background:linear-gradient(#4a2a33,#8a4a56);border-bottom:3px solid #D68A7B}
+.r0{background:linear-gradient(#45364F,#2d2836);border-top:3px solid var(--cy)}
 .who{display:flex;gap:10px;align-items:center}.bars{display:flex;flex-direction:column;gap:3px}
 .av{width:clamp(56px,9vh,92px);aspect-ratio:5/6;border-radius:12px}
-.av.hit{animation:shake .35s}.av.sh{filter:drop-shadow(0 0 12px #57D9F5)}.av.hl{filter:drop-shadow(0 0 12px #63D9A1)}
+.av.hit{animation:shake .35s}.av.sh{filter:drop-shadow(0 0 12px #75BFC0)}.av.hl{filter:drop-shadow(0 0 12px #8fcfb4)}
 @keyframes shake{20%{transform:translateX(-9px)}60%{transform:translateX(9px)}}
 .shk{animation:shk .3s}@keyframes shk{25%{transform:translate(3px,-3px)}75%{transform:translate(-3px,3px)}}
 .hp{position:relative;height:18px;width:min(240px,34vw);background:#0007;border-radius:9px;border:2px solid #fff4;overflow:hidden}
-.hp i{display:block;height:100%;background:linear-gradient(90deg,#63D9A1,#c4f09a);transition:width .5s}.r1 .hp i{background:linear-gradient(90deg,#ff6b6b,#ffb199)}
+.hp i{display:block;height:100%;background:linear-gradient(90deg,#8fcfb4,#cfe3c6);transition:width .5s}.r1 .hp i{background:linear-gradient(90deg,#D68A7B,#f1c1b5)}
 .hp span{position:absolute;inset:0;text-align:center;font:700 12px/14px sans-serif}
 .en small{display:block;font-size:11px}.en u{display:inline-block;width:11px;height:11px;margin:2px 3px 0 0;border-radius:3px;transform:rotate(45deg);background:#fff2}.en u.on{background:var(--cy);box-shadow:0 0 6px var(--cy)}
 .slots,.piles{display:flex;gap:8px;align-items:center}
-.pile{width:calc(var(--cw)*.62);aspect-ratio:5/7;border-radius:8px;border:2px solid var(--go);background:repeating-linear-gradient(45deg,#1b2f5a 0 6px,#122244 6px 12px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;box-shadow:3px 3px 0 #0006,6px 6px 0 #0004}.pile b{font-size:20px;color:var(--go)}
-.mid{flex:1.25 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:5vw;position:relative;perspective:700px;background:radial-gradient(#1b4a8a,#0c1530)}
-.plane{position:absolute;inset:6% 8%;transform:rotateX(38deg);border:2px solid #57D9F566;border-radius:20px;background:repeating-linear-gradient(60deg,#57d9f518 0 2px,transparent 2px 40px),repeating-linear-gradient(120deg,#57d9f518 0 2px,transparent 2px 40px),radial-gradient(circle,#57d9f533,transparent 60%)}
+.pile{width:calc(var(--cw)*.62);aspect-ratio:5/7;border-radius:8px;border:2px solid var(--go);background:repeating-linear-gradient(45deg,#4a3d60 0 6px,#352b40 6px 12px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;box-shadow:3px 3px 0 #0006,6px 6px 0 #0004}.pile b{font-size:20px;color:var(--go)}
+.mid{flex:1.25 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:5vw;position:relative;perspective:700px;background:radial-gradient(#4a3d60,#1f1d26)}
+.plane{position:absolute;inset:6% 8%;transform:rotateX(38deg);border:2px solid #75BFC066;border-radius:20px;background:repeating-linear-gradient(60deg,#75BFC018 0 2px,transparent 2px 40px),repeating-linear-gradient(120deg,#75BFC018 0 2px,transparent 2px 40px),radial-gradient(circle,#75BFC033,transparent 60%)}
 .main{width:var(--cw);aspect-ratio:5/7;border:2px dashed #ffffff44;border-radius:10px;display:grid;place-items:center;font-size:11px;color:var(--gr);position:relative;z-index:1;text-align:center}
 .main .card{opacity:.95}.glow{box-shadow:0 0 26px 6px var(--go)}
-.tb{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:3}.tb .b{padding:5px 10px;font-size:11px}
-#info{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 14px;background:#0b1126;font-size:13px;min-height:46px}
+.tb{position:absolute;left:10px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:3}.tb .b{padding:5px 10px;font-size:11px}
+#info{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 14px;background:#1a1820;font-size:13px;min-height:46px}
 #info span:last-child{display:flex;gap:8px;flex:none}#info .b{padding:7px 14px}
-#hand{display:flex;gap:6px;justify-content:center;padding:26px 8px 10px;overflow-x:auto;min-height:calc(var(--cw)*1.4 + 40px);background:linear-gradient(#0c1530,#101827);align-items:flex-end}
-.card{--tc:#57D9F5;width:var(--cw);aspect-ratio:5/7;flex:none;border-radius:10px;border:2px solid var(--tc);background:linear-gradient(160deg,#27427a,#0f1a33);position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;text-align:center;box-shadow:0 6px 12px #0008;transition:transform .2s,box-shadow .2s;overflow:hidden}
-.ta{--tc:#ff6b6b}.th{--tc:#63D9A1}.tk{--tc:#F4C96B}.ts{--tc:#c79bff}
+#hand{display:flex;gap:6px;justify-content:center;padding:26px 8px 10px;overflow-x:auto;min-height:calc(var(--cw)*1.4 + 40px);background:linear-gradient(#1f1d26,#262a30);align-items:flex-end}
+.card{--tc:#75BFC0;width:var(--cw);aspect-ratio:5/7;flex:none;border-radius:10px;border:2px solid var(--tc);background:linear-gradient(160deg,#5a4668,#2b2533);position:relative;display:flex;flex-direction:column;align-items:center;padding:4px;text-align:center;box-shadow:0 6px 12px #0008;transition:transform .2s,box-shadow .2s;overflow:hidden}
+.ta{--tc:#D68A7B}.th{--tc:#8fcfb4}.tk{--tc:#C9A96E}.ts{--tc:#A895CE}
 .card[data-a]{cursor:pointer}.card[data-a]:hover{transform:translateY(-8px)}
 .card.sel{transform:translateY(-22px) scale(1.1);box-shadow:0 0 22px var(--tc);z-index:2}
-.cc{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--go);color:#101827;font:900 13px/22px sans-serif;text-align:center}
+.cc{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--go);color:#262a30;font:900 13px/22px sans-serif;text-align:center}
 .ci{width:50%;aspect-ratio:1;margin:12% 0 2px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(var(--tc),#0000 75%);font-size:calc(var(--cw)*.3);font-weight:900;text-shadow:0 0 8px #000}
 .card b{font-size:calc(var(--cw)*.105);line-height:1.1}.card em{font-size:calc(var(--cw)*.085);color:var(--tc);font-style:normal}
-.card p{font-size:calc(var(--cw)*.083);color:#c9d3e6;margin-top:auto;line-height:1.15}
+.card p{font-size:calc(var(--cw)*.083);color:#d8d2c2;margin-top:auto;line-height:1.15}
 .card.sm{width:calc(var(--cw)*.5);padding:2px}.sm p,.sm em{display:none}.sm b{font-size:8px}.sm .ci{font-size:16px;margin-top:8px}.sm .cc{width:15px;height:15px;font-size:9px;line-height:15px}
 .ph{border-style:dashed;color:var(--gr);font-size:9px;justify-content:center;background:none;box-shadow:none}
 .off{filter:grayscale(.8) brightness(.7)}.off::after{content:"Energi kurang";position:absolute;bottom:3px;left:0;right:0;font-size:9px;background:#000b;color:var(--go)}
 .fly{position:fixed;z-index:60;pointer-events:none}.fly .card{width:100%;height:100%;aspect-ratio:auto}
-.pj{position:fixed;left:0;top:0;width:28px;height:28px;border-radius:50%;background:radial-gradient(#fff,var(--cy) 50%,transparent 72%);z-index:50;pointer-events:none}.pj.p1{background:radial-gradient(#fff,#ff6b6b 50%,transparent 72%)}
+.pj{position:fixed;left:0;top:0;width:28px;height:28px;border-radius:50%;background:radial-gradient(#fff,var(--cy) 50%,transparent 72%);z-index:50;pointer-events:none}.pj.p1{background:radial-gradient(#fff,#D68A7B 50%,transparent 72%)}
 .fl{position:fixed;font-weight:900;font-size:28px;text-shadow:0 2px 6px #000;animation:rise 1s forwards;z-index:60;pointer-events:none;white-space:nowrap}
-.fl.dm{color:#ff6b6b}.fl.sh{color:var(--cy);font-size:18px;margin-top:30px}.fl.hl{color:var(--ok)}.fl.en{color:var(--go);font-size:20px}
+.fl.dm{color:#D68A7B}.fl.sh{color:var(--cy);font-size:18px;margin-top:30px}.fl.hl{color:var(--ok)}.fl.en{color:var(--go);font-size:20px}
 @keyframes rise{from{transform:translate(-50%,0)}to{transform:translate(-50%,-55px);opacity:0}}
-#ban{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%) scale(.8);padding:10px 28px;background:#0b1126ee;border:2px solid var(--go);border-radius:14px;font-weight:900;font-size:clamp(16px,2.6vw,28px);color:var(--go);opacity:0;pointer-events:none;transition:.25s;z-index:70;text-align:center}#ban.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#ban{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%) scale(.8);padding:10px 28px;background:#1a1820ee;border:2px solid var(--go);border-radius:14px;font-weight:900;font-size:clamp(16px,2.6vw,28px);color:var(--go);opacity:0;pointer-events:none;transition:.25s;z-index:70;text-align:center}#ban.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
 #ov{display:none;position:fixed;inset:0;z-index:40;justify-content:center;padding:10px}#ov.top{display:flex;align-items:flex-start}#ov.mid{display:flex;align-items:center}
-.bk{position:absolute;inset:0;background:#050a1966}.mid .bk{background:#050a19aa}.win .bk{background:radial-gradient(#f4c96b77,#050a19dd)}
-.pn{position:relative;background:linear-gradient(#1c3668,#101c3a);border:2px solid var(--cy);border-radius:16px;padding:16px 20px;width:min(620px,94vw);max-height:92vh;overflow:auto;box-shadow:0 0 30px #57d9f566;animation:pop .25s;user-select:text}
-.pn.w{border-color:var(--go);box-shadow:0 0 60px #f4c96bcc}.pn.l{border-color:var(--gr)}@keyframes pop{from{transform:scale(.9);opacity:0}}
+.bk{position:absolute;inset:0;background:#14121a66}.mid .bk{background:#14121aaa}.win .bk{background:radial-gradient(#C9A96E77,#14121add)}
+.pn{position:relative;background:linear-gradient(#4d3b5a,#2d2836);border:2px solid var(--cy);border-radius:16px;padding:16px 20px;width:min(620px,94vw);max-height:92vh;overflow:auto;box-shadow:0 0 30px #75BFC066;animation:pop .25s;user-select:text}
+.pn.w{border-color:var(--go);box-shadow:0 0 60px #C9A96Ecc}.pn.l{border-color:var(--gr)}@keyframes pop{from{transform:scale(.9);opacity:0}}
 .pn h3{color:var(--go);letter-spacing:1px;margin-bottom:6px}.pn h4{color:var(--cy)}.pn p{margin:5px 0}.qt{font-size:22px;font-weight:700;margin:10px 0}.rk{color:var(--gr);font-size:13px}
-.pn ol{padding-left:22px;margin:6px 0}.pn li{margin:4px 0}.pn input{width:100%;padding:12px;border-radius:10px;border:2px solid var(--cy);background:#0b1126;color:#fff;font-size:20px;margin:8px 0}
-.bt{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}#msg{color:var(--go);min-height:20px}.bd{color:#ff9aa8}.gd{color:var(--ok)}
+.pn ol{padding-left:22px;margin:6px 0}.pn li{margin:4px 0}.pn input{width:100%;padding:12px;border-radius:10px;border:2px solid var(--cy);background:#1a1820;color:#fff;font-size:20px;margin:8px 0}
+.bt{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}#msg{color:var(--go);min-height:20px}.bd{color:#f0a597}.gd{color:var(--ok)}
 body.noanim *{animation:none!important;transition:none!important}
 @media(max-width:760px){:root{--cw:clamp(70px,11vh,100px)}.rg{padding:4px 8px;gap:6px}.hp{width:30vw}#info{font-size:11px}.slots{display:none}}
+
+.mid{flex:1 1 0;display:grid;grid-template-columns:repeat(3,var(--uw)) calc(var(--uw)*.9) repeat(3,var(--uw));grid-template-rows:auto auto 10px auto auto;justify-content:center;align-content:center;gap:4px calc(var(--cw)*.1);--uw:calc(var(--cw)*.84);background:radial-gradient(#4a3d60,#1f1d26)}
+.rg{flex:0 0 auto}.r1{background:linear-gradient(#4a2a33,#6b3a46)}.r0{background:linear-gradient(#45364F,#2d2836)}
+.lb{font-size:11px;color:var(--go);text-align:center}.lb b{color:var(--wh)}.ln{grid-column:1/-1;height:2px;align-self:center;background:linear-gradient(90deg,transparent,var(--go),transparent)}
+.us{width:var(--uw);aspect-ratio:5/7;--cw:var(--uw);border:2px dashed #ffffff3a;border-radius:8px;display:grid;place-items:center;color:var(--gr);font-size:10px;position:relative;z-index:1;background:#0003}
+.us.on{border:0;background:none;cursor:pointer}.us .card,.main .card{width:100%;height:100%;aspect-ratio:auto}.us p,.us em{display:none}.us.vl{border-color:var(--ok);box-shadow:0 0 14px var(--ok);animation:pls 1s infinite alternate}
+.mid .main{width:calc(var(--uw)*.9)}
+.ua,.uh{position:absolute;top:30%;width:22px;height:22px;border-radius:50%;font:900 12px/22px sans-serif;color:#1a1820;text-align:center;z-index:2}.ua{left:3px;background:#D68A7B}.uh{right:3px;background:#8fcfb4}
+.hitr{animation:atk .4s}@keyframes atk{50%{transform:translateY(-22px) scale(1.12)}}@keyframes pls{to{filter:brightness(1.35)}}
+.rcb{position:absolute;right:12px;bottom:10px;width:90px;height:90px;border-radius:50%;border:3px solid var(--go);background:radial-gradient(#4d3b5a,#2d2836);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--cy);z-index:4;box-shadow:0 0 16px #75BFC055;transition:.2s;text-align:center}
+.rcb svg{width:28px}.rcb small{font-size:8px;color:var(--wh);line-height:1}.rcb b{font-size:16px;color:var(--go)}.rcb:hover{transform:scale(1.08)}.rcb.on{box-shadow:0 0 26px var(--cy);animation:pls .8s infinite alternate}.rcb.dis{filter:grayscale(1);opacity:.6;cursor:not-allowed}
+.card.rm{box-shadow:0 0 14px var(--cy);animation:pls .8s infinite alternate}.tu{--tc:#E9E1D0}
+#hand{perspective:900px}.card[data-a]:hover{transform:translateY(-10px) rotateX(8deg)}
+.q1{box-shadow:0 0 8px var(--tc),0 6px 12px #0008}.q2,.q3,.q4{border-color:#f0dfb4;box-shadow:0 0 0 1px var(--tc),0 0 12px var(--tc),0 6px 12px #0008}
+.q2::before,.q3::before,.q4::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fff7 50%,transparent 65%);transform:translateX(-130%);animation:shn 3.4s infinite;pointer-events:none;z-index:3}
+.q3{box-shadow:0 0 16px #A895CE,0 6px 12px #0008}.q4{border-color:#C9A96E;background:linear-gradient(160deg,#7a5c34,#2b2533);box-shadow:0 0 20px #C9A96E,0 6px 12px #0008}@keyframes shn{55%,100%{transform:translateX(130%)}}
+.pt{position:fixed;width:8px;height:8px;background:var(--go);z-index:55;pointer-events:none}
+#arena::after{content:"";position:absolute;inset:4px;border:3px solid;border-image:linear-gradient(135deg,#f0dfb4,#8a6f3c 40%,#f0dfb4 60%,#8a6f3c) 1;box-shadow:inset 0 0 50px #000a;pointer-events:none;z-index:6}
+.plane::after{content:"∑ π √ ƒ ∫ ² ÷ ×";position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(28px,5vw,64px);letter-spacing:.4em;color:#C9A96E1a}
+.sb{display:flex;align-items:center;gap:8px;width:min(560px,100%);padding:8px 14px;border-radius:30px;background:linear-gradient(#3a3044,#2d2836);border:2px solid var(--go);box-shadow:0 0 18px #C9A96E44,inset 0 0 12px #0006;color:var(--go)}
+.sb input{flex:1;background:none;border:0;outline:0;color:var(--wh);font-size:16px;user-select:text}.xb{background:#0006;border-radius:50%;width:26px;height:26px;color:var(--wh)}
+select{background:#3a3044;color:var(--wh);border:2px solid var(--cy);border-radius:10px;padding:8px 12px;font:inherit}
+
+.spr{width:100%;height:100%;animation:bob 2.6s ease-in-out infinite;image-rendering:pixelated;filter:drop-shadow(0 3px 0 #0006)}
+.av.hit .spr{filter:brightness(2) saturate(.3)}.av.win .spr{animation:jump .5s 6}@keyframes jump{50%{transform:translateY(-14px)}}
+.mh{position:absolute;bottom:4%;width:clamp(90px,14vw,190px);aspect-ratio:2/3;z-index:1}
+#hand{--cw:clamp(96px,15vh,148px)}
+.kb{outline:3px solid var(--go);outline-offset:1px}.kb::after{content:"KOMBO +2";position:absolute;bottom:3px;left:0;right:0;font-size:9px;font-weight:900;background:var(--go);color:#1a1820}
+.sti{display:inline-block;margin:2px 6px 0 0;padding:1px 8px;border:1px solid var(--go);border-radius:10px;font-size:11px;cursor:pointer;color:var(--go)}
+.ci{width:64%;margin:9% 0 3px}.pxi{width:100%;height:100%;filter:drop-shadow(0 2px 0 #0008)}.sm .ci{width:60%}
 </style></head><body>
 <div id="ov"></div><div id="ban"></div>
 <section id="menu" class="scr on"><div class="deco" id="deco"></div><div class="mc"><h1>TCG FUNDAMATH</h1><p class="sl">Susun Strategi, Taklukkan Angka!</p>
@@ -135,6 +165,7 @@ T(4,'Persentase dalam Soal Cerita','Diskon p% berarti potongan sebesar p% dari h
 T(4,'Soal Cerita SPLDV','Beri huruf pada harga yang dicari, lalu pakai persamaan.','2b + p = A dan b + p = B → b = A − B',()=>{const b=r(4,12),p=r(2,9);return[`2 buku dan 1 pulpen harganya ${2*b+p} ribu rupiah. 1 buku dan 1 pulpen harganya ${b+p} ribu rupiah. Berapa ribu rupiah harga 1 buku?`,b,[`Misalkan buku = b dan pulpen = p: 2b + p = ${2*b+p} dan b + p = ${b+p}.`,`Kurangkan kedua persamaan: b = ${2*b+p} − ${b+p} = ${b}.`]]});
 const genQ=(s,i=r(0,7))=>{const t=S[s][i],[q,a,st]=t.g();return{s,i,t,q,a,st}};
 //QE
+const DNm=['Mudah','Sedang','Menantang'],LB=S.flatMap((g,s)=>g.map((t,i)=>{const[q,a,st]=t.g();return{s,i,t,q,a,st,d:i<3?0:i<6?1:2,hay:(t.n+' '+t.k+' '+t.f+' '+SN[s]+' '+q+' '+st.join(' ')).toLowerCase()}}));
 /* ===== Kartu ===== */
 const CD=[],C=(n,t,c,tp,o,ic)=>CD.push({id:CD.length,n,t,c,tp,ic,d:0,sh:0,hl:0,dr:0,en:0,pen:0,cyc:0,h:1,p:0,self:0,...o});
 C('Serangan Bilangan Bulat','a',1,0,{d:3},'+');C('Sambaran Aljabar','a',2,1,{d:5},'x');C('Tebasan Pythagoras','a',3,2,{d:7,p:1},'Δ');C('Ledakan Pangkat','a',3,1,{d:8},'²');
@@ -143,16 +174,22 @@ C('Perisai Pecahan','d',1,0,{sh:4},'½');C('Dinding Geometri','d',2,2,{sh:8},'�
 C('Pemulihan Aritmetika','h',2,0,{hl:6},'×');C('Tetes Desimal','h',1,0,{hl:3},'.');C('Isi Ulang Persamaan','h',1,1,{en:3},'=');
 C('Pustaka Variabel','k',1,1,{dr:2},'n');C('Uji Nalar','k',2,4,{d:4,hl:4},'?');C('Kilat Substitusi','k',2,1,{d:7},'↯');C('Kombinasi Eliminasi','k',3,1,{d:6,sh:6},'⊕');
 C('Pembeku Waktu','s',2,3,{pen:2},'Ω');C('Putar Dek','s',1,4,{cyc:4},'⟳');C('Meteor Bilangan','s',4,4,{d:12,self:3},'★');
-const TN={a:'Serangan',d:'Pertahanan',h:'Pemulihan',k:'Pengetahuan',s:'Khusus'};
-const desc=c=>[c.d&&`Serang ${c.d}${c.h>1?' ×'+c.h:''}${c.p?' (tembus perisai)':''}`,c.sh&&`Perisai ${c.sh}`,c.hl&&`Pulih ${c.hl} HP`,c.en&&`+${c.en} energi`,c.dr&&`Tarik ${c.dr} kartu`,c.pen&&`Lawan −${c.pen} energi`,c.cyc&&`Buang tangan, tarik ${c.cyc}`].filter(Boolean).join('. ')+'.';
+C('Penjaga Angka','u',2,0,{u:1,ua:2,uh:5,rw:'f'},'♖');C('Ksatria Aljabar','u',3,1,{u:1,ua:4,uh:4,rw:'f'},'♘');C('Golem Geometri','u',3,2,{u:1,ua:3,uh:7,rw:'f'},'▣');
+C('Penyihir Pecahan','u',2,0,{u:1,ua:1,uh:3,rw:'b',sp:'hl'},'✦');C('Pustakawan Rasio','u',2,0,{u:1,ua:0,uh:3,rw:'b',sp:'en'},'∑');C('Pelindung Variabel','u',2,1,{u:1,ua:0,uh:4,rw:'b',sp:'sh'},'✚');C('Pemanah Fungsi','u',2,3,{u:1,ua:3,uh:3,rw:'x'},'➶');
+C('Arsip Kembali','s',2,4,{rt:1},'↺');C('Semangat Aljabar','s',2,1,{bf:2},'↑');C('Embun Pemulih','h',2,0,{hl:2,rg:2},'~');C('Kabut Racun','a',2,2,{d:2,dt:3},'☠');
+[0,1,2,2,1,0,1,0,2,1,1,0,0,1,1,2,3,3,3,2,4,0,2,1,1,2,1,3,3,2,1,2].forEach((q,i)=>CD[i].q=q);
+const TN={a:'Serangan',d:'Pertahanan',h:'Pemulihan',k:'Pengetahuan',s:'Khusus',u:'Unit'},RN=['Biasa','Tidak Biasa','Langka','Epik','Legendaris'];
+const desc=c=>[c.u&&`Unit ${c.ua}/${c.uh} · ${{f:'Barisan depan',b:'Barisan belakang',x:'Depan atau belakang'}[c.rw]}${c.sp?' · '+{sh:'+2 perisai',hl:'+1 HP',en:'+1 energi'}[c.sp]+' tiap giliran':''}`,c.rt&&'Ambil 1 kartu acak dari buangan',c.bf&&`Penguatan ${c.bf} giliran: +2 serangan kartu, +1 serangan unit`,c.rg&&`Pulih 2 HP tiap giliran (${c.rg}×)`,c.dt&&`Racun: lawan −2 HP tiap giliran (${c.dt}×)`,c.d&&`Serang ${c.d}${c.h>1?' ×'+c.h:''}${c.p?' (tembus perisai)':''}`,c.sh&&`Perisai ${c.sh}`,c.hl&&`Pulih ${c.hl} HP`,c.en&&`+${c.en} energi`,c.dr&&`Tarik ${c.dr} kartu`,c.pen&&`Lawan −${c.pen} energi`,c.cyc&&`Buang tangan, tarik ${c.cyc}`].filter(Boolean).join('. ')+'.';
 const risk=c=>c.t=='k'||c.t=='s'?(c.self?`Jika salah: tidak berefek dan kamu terkena ${c.self} kerusakan.`:'Jika salah: tidak berefek.'):'Jika salah: efek hanya separuh.';
-const CH=(c,o={})=>`<div class="card t${c.t}${o.s?' sel':''}${o.off?' off':''}${o.sm?' sm':''}"${o.k>=0?` data-a=pick data-v=${o.k}`:''}><i class=cc>${c.c}</i><div class=ci>${c.ic}</div><b>${c.n}</b><em>${TN[c.t]}</em><p>${desc(c)}</p></div>`;
+const CH=(c,o={})=>`<div class="card t${c.t} q${c.q}${o.s?' sel':''}${o.off?' off':''}${o.sm?' sm':''}${o.rm?' rm':''}${o.kb?' kb':''}"${o.k>=0?` data-a=pick data-v=${o.k}`:''}><i class=cc>${c.c}</i><div class=ci>${PI(c)}</div><b>${c.n}</b><em>${TN[c.t]} · ${RN[c.q]}</em><p>${desc(c)}</p>${c.u?`<span class=ua>${o.a??c.ua}</span><span class=uh>${o.h??c.uh}</span>`:''}</div>`;
 /* ===== Karakter ===== */
 const HR={n:{nm:'Numeris',ds:'Pelajar teliti berkacamata cyan. Tenang dan penuh hitungan.'},a:{nm:'Arsiparis',ds:'Penjaga arsip rumus berjubah ungu. Cerdik dan suka strategi.'}};
-const AV=k=>{const P={n:['#e9b98f','#1b2b4d','#2563c9','#57D9F5'],a:['#f0c8a0','#5b2a86','#7e3fc4','#F4C96B'],o:['#b9c3d6','#2a0f14','#a83245','#ff6b6b']}[k];
-return `<svg viewBox="0 0 100 120"><g class=bob><path d="M18 120c0-26 14-38 32-38s32 12 32 38z" fill="${P[2]}"/><path d="M40 84l10 14 10-14z" fill="${P[3]}"/><circle cx=50 cy=48 r=26 fill="${P[0]}"/>${k=='a'?`<path d="M22 56C16 24 34 14 50 14s34 10 28 42c-2-16-12-24-28-24s-26 8-28 24z" fill="${P[1]}"/><circle cx=76 cy=30 r=7 fill="${P[3]}"/>`:k=='n'?`<path d="M24 46C22 22 38 16 50 16s28 6 26 30c-6-12-16-16-26-16s-20 4-26 16z" fill="${P[1]}"/>`:`<path d="M22 44 28 14l14 14 8-16 8 16 14-14 6 30c-12-14-44-14-56 0z" fill="${P[1]}"/>`}<circle cx=41 cy=52 r=3.5 fill="#101827"/><circle cx=59 cy=52 r=3.5 fill="#101827"/>${k=='n'?'<rect x=34 y=46 width=14 height=12 rx=3 fill=none stroke=#57D9F5 stroke-width=2 /><rect x=52 y=46 width=14 height=12 rx=3 fill=none stroke=#57D9F5 stroke-width=2 />':''}<path d="M42 64q8 7 16 0" stroke="#101827" stroke-width=2.5 fill=none stroke-linecap=round /></g></svg>`};
+const PX={"a": {"pal": {"k": "#1e1726", "h": "#2e2540", "H": "#6b5a8a", "s": "#f6d3b3", "e": "#7a3d8f", "p": "#ffffff", "m": "#d68a7b", "w": "#f4efe6", "b": "#45364F", "B": "#2f2438", "r": "#D68A7B", "n": "#3b3050", "N": "#2a2238", "o": "#2a2238", "y": "#e9e1d0"}, "rows": ["....kkkk", "...khhhh", "..khhHhh", ".khhhhhh", ".khhhhhh", ".khhhhhs", ".khhhsss", ".khhsees", ".khhseps", ".khhsssm", "..khhsss", "..khhhhs", ".khhbbww", ".khbbbwr", ".khbbbBw", "..kbbbBw", "..knnnnn", ".knnNnnn", ".krrrrrr", "...kssk.", "...kssk.", "...kyyk.", "..kooook", "..kkkkkk"]}, "n": {"pal": {"k": "#1a2030", "h": "#1f2d4d", "H": "#4a6aa8", "s": "#f1c9a5", "e": "#2a4a7a", "p": "#ffffff", "g": "#75BFC0", "m": "#c98877", "b": "#2f4b7a", "B": "#223858", "w": "#f4efe6", "t": "#75BFC0", "z": "#3a3f4a", "Z": "#2a2e38", "o": "#1e1e26"}, "rows": [".....kkk", "...kkhhh", "..khhHhh", ".khhhhhh", ".khhhhss", ".khhssss", ".khhshhs", ".khhgeeg", ".khhgepg", ".khhsssm", "..khhsss", "...kksss", ".kbbbbww", ".kbbbbwt", ".kbbbBwt", ".kbbbBBt", "..kbbbBB", "..kzzzzz", "..kzzzZz", "...kzzzk", "...kzzzk", "...kzzzk", "..kooook", "..kkkkkk"]}, "o": {"pal": {"k": "#1a1420", "h": "#3a2a4a", "s": "#c9c3d6", "e": "#ff8a7a", "p": "#fff2c0", "m": "#6a4a5a", "b": "#6b3a4a", "B": "#4a2a38", "g": "#C9A96E"}, "rows": ["..g..kkk", ".gg.khhh", "..khhhhh", ".khhhhhh", ".khhhhhh", ".khhhsss", ".khhsees", ".khhseps", ".khhsssm", "..khhsss", "..khhhhs", ".khhbbgg", ".khbbbbg", ".kbbbbbB", ".kbbbbBB", ".kbbbBBg", ".kbbbBBB", ".kbbbBBB", ".kbbBBBB", ".kbbBBBB", ".kbBBBBg", ".kbBBBBg", ".kgggggg", "..kkkkkk"]}};const SPR={};for(const k in PX){const{pal,rows}=PX[k],d={};rows.map(l=>l+[...l].reverse().join('')).forEach((row,y)=>{let x=0;while(x<16){const c=row[x];let n=1;while(x+n<16&&row[x+n]==c)n++;if(c!='.')(d[c]=d[c]||[]).push(`M${x} ${y}h${n}v1h-${n}z`);x+=n}});SPR[k]=Object.entries(d).map(([c,v])=>`<path fill="${pal[c]}" d="${v.join('')}"/>`).join('')}
+const IC={"sword": ["...ww...", "...ww...", "...ww...", "...ww...", ".gggggg.", "...gg...", "...gg...", "...hh..."], "shield": [".wwwwww.", "wwbbbbww", "wbbwwbbw", "wbbwwbbw", "wbbbbbbw", ".wbbbbw.", "..wbbw..", "...ww..."], "heart": [".rr..rr.", "rrrrrrrr", "rrwrrrrr", "rrrrrrrr", ".rrrrrr.", "..rrrr..", "...rr...", "........"], "book": ["........", ".ww..ww.", "wjjwwjjw", "wjjwwjjw", "wjjwwjjw", "wjjwwjjw", ".wwwwww.", "........"], "star": ["...ww...", "...vv...", ".wvvvvw.", "wvvvvvvw", ".vvvvvv.", "..vvvv..", ".vv..vv.", ".v....v."], "helm": ["...gg...", "..yyyy..", ".yyyyyy.", ".ykkkky.", ".yyyyyy.", ".yy..yy.", ".yy..yy.", ".nn..nn."], "hat": ["....v...", "...vv...", "..vvvv..", "..vwvv..", ".vvvvvv.", "vvvvvvvv", "..gggg..", "........"]},IP={"w": "#f4efe6", "g": "#C9A96E", "h": "#8a6f3c", "b": "#75BFC0", "r": "#D68A7B", "k": "#1a1820", "v": "#A895CE", "j": "#7D9D91", "n": "#4a6aa8", "y": "#d8d2c2"},PIC={};for(const k in IC){const d={};IC[k].forEach((row,y)=>{let x=0;while(x<8){const c=row[x];let n=1;while(x+n<8&&row[x+n]==c)n++;if(c!='.')(d[c]=d[c]||[]).push(`M${x} ${y}h${n}v1h-${n}z`);x+=n}});PIC[k]=`<svg class=pxi viewBox="0 0 8 8" shape-rendering=crispEdges>${Object.entries(d).map(([c,v])=>`<path fill="${IP[c]}" d="${v.join('')}"/>`).join('')}</svg>`}
+const PI=c=>PIC[c.u?(c.rw=='b'?'hat':'helm'):c.rt||c.t=='s'?'star':{a:'sword',d:'shield',h:'heart',k:'book'}[c.t]];
+const AV=(k,full)=>`<svg class=spr viewBox="0 0 16 ${full?24:19}" shape-rendering=crispEdges>${SPR[k]}</svg>`;
 /* ===== Progres & penyimpanan ===== */
-const SV={m:0,w:0,c:0,x:0,xp:0,t:{},snd:1,anim:1,seen:0};
+const SV={m:0,w:0,c:0,x:0,xp:0,t:{},snd:1,anim:1,seen:0,sk:3,h:[]};
 try{Object.assign(SV,JSON.parse(localStorage.fundamath))}catch{}
 const save=()=>{try{localStorage.fundamath=JSON.stringify(SV)}catch{}};
 const $=id=>document.getElementById(id),rc=e=>e.getBoundingClientRect(),shuf=a=>{for(let i=a.length-1;i>0;i--){const j=r(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -162,19 +199,37 @@ let AC;const snd=n=>{if(!SV.snd)return;try{AC=AC||new AudioContext();const M={se
 /* ===== Animasi ===== */
 let EP=0,tt;const W=ms=>{const e=EP;return new Promise((a,b)=>setTimeout(()=>e==EP?a():b(),SV.anim?ms:20))};
 const toast=x=>{const e=$('ban');e.textContent=x;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),1500)};
-const fly=(h,a,b)=>{if(!SV.anim)return Promise.resolve();const p=a.getBoundingClientRect?rc(a):a,q=rc(b),e=document.createElement('div');e.className='fly';e.innerHTML=h;e.style.cssText=`left:${p.left}px;top:${p.top}px;width:${p.width}px;height:${p.height}px`;document.body.append(e);return e.animate([{transform:'none'},{transform:`translate(${q.left+q.width/2-p.left-p.width/2}px,${q.top+q.height/2-p.top-p.height/2}px) scale(${q.width/p.width})`}],{duration:450,easing:'ease-in-out',fill:'forwards'}).finished.then(()=>e.remove())};
+const fly=(h,a,b)=>{if(!SV.anim)return Promise.resolve();const p=a.getBoundingClientRect?rc(a):a,q=rc(b),e=document.createElement('div'),dx=q.left+q.width/2-p.left-p.width/2,dy=q.top+q.height/2-p.top-p.height/2,P='perspective(900px) ',T=(x,y,z,rx,ry,sc)=>`${P}translate3d(${x}px,${y}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${sc})`;e.className='fly';e.innerHTML=h;e.style.cssText=`left:${p.left}px;top:${p.top}px;width:${p.width}px;height:${p.height}px`;document.body.append(e);
+return e.animate([{transform:T(0,0,0,0,0,1),filter:'drop-shadow(0 4px 4px #0008)'},{transform:T(dx*.35,dy*.35-70,140,24,-20,1.18),filter:'drop-shadow(0 34px 16px #000a)',offset:.4},{transform:T(dx,dy,0,0,0,q.width/p.width),filter:'drop-shadow(0 2px 3px #0008)'}],{duration:620,easing:'ease-in-out',fill:'forwards'}).finished.then(()=>e.remove())};
+const burst=el=>{if(!SV.anim)return;const b=rc(el);for(let i=0;i<9;i++){const q=document.createElement('i'),a=i*40*Math.PI/180,d=40+r(0,30);q.className='pt';q.style.cssText=`left:${b.left+b.width/2}px;top:${b.top+b.height/2}px`;document.body.append(q);q.animate([{transform:'rotate(45deg)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px) rotate(45deg) scale(.2)`,opacity:0}],{duration:600}).finished.then(()=>q.remove())}};
 const proj=(s,o)=>{snd('use');if(!SV.anim)return Promise.resolve();const a=rc($('av'+s)),b=rc($('av'+o)),e=document.createElement('div'),x=q=>q.left+q.width/2-14,y=q=>q.top+q.height/2-14;e.className='pj p'+s;document.body.append(e);return e.animate([{transform:`translate(${x(a)}px,${y(a)}px)`},{transform:`translate(${x(b)}px,${y(b)}px) scale(1.6)`}],{duration:420,easing:'ease-in',fill:'forwards'}).finished.then(()=>e.remove())};
-const fl=(t,x,c)=>{const e=document.createElement('div'),b=rc($('av'+t));e.className='fl '+c;e.textContent=x;e.style.cssText=`left:${b.left+b.width/2}px;top:${b.top+10}px`;document.body.append(e);setTimeout(()=>e.remove(),1000)};
+const fl=(t,x,c)=>{const e=document.createElement('div'),b=rc(t.nodeType?t:$('av'+t));e.className='fl '+c;e.textContent=x;e.style.cssText=`left:${b.left+b.width/2}px;top:${b.top+10}px`;document.body.append(e);setTimeout(()=>e.remove(),1000)};
 const ring=(t,c)=>{const e=$('av'+t);e.classList.add(c);setTimeout(()=>e.classList.remove(c),800)};
 /* ===== Status permainan ===== */
-let G=null,P={hero:'n'},DF=1,Q,LQ,CF;
+let G=null,P={hero:'n'},DF=3,Q,LQ,CF;
 const lg=x=>G.lg.push(x);
+const slot=(s,c)=>(c.rw=='f'?[0,1,2]:c.rw=='b'?[3,4,5]:[0,1,2,3,4,5]).find(i=>!G.u[s][i]);
+const rw=()=>{const h=SV.h.slice(-5);return h.length?h.reduce((a,x)=>a+x.w,0)/h.length:.5};
+const aiLv=()=>Math.max(1,Math.min(10,Math.round(SV.sk+1+3*rw())));
+const weak=s=>{if(Math.random()>.4)return;const l=S[s].map((t,i)=>{const[o,b]=SV.t[t.n]||[0,0];return[i,b-o]}).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];return l&&l[0]};
+const bd=()=>{const lb=s=>`<div class=lb style="grid-column:1/4">Barisan Depan <b id=fc${s}></b></div><div class=lb style="grid-column:5/8">Barisan Belakang <b id=bc${s}></b></div>`,sl=s=>[0,1,2].map(i=>`<div class=us id=u${s}${i}></div>`).join('')+`<div class=main id=m${s}></div>`+[3,4,5].map(i=>`<div class=us id=u${s}${i}></div>`).join('');return `<div class=plane></div>${lb(1)}${sl(1)}<div class=ln></div>${sl(0)}${lb(0)}`};
+async function battle(s){const o=1-s;for(let i=0;i<3;i++){const u=G.u[s][i];if(!u||!u.a)continue;const at=u.a+(G.bf[s]?1:0);const j=G.u[o].findIndex(x=>x),el=$('u'+s+i);el.classList.add('hitr');setTimeout(()=>el.classList.remove('hitr'),400);await W(300);
+if(j<0){await proj(s,o);await hit(o,at,0);if(chk())return}else{const t=G.u[o][j],te=$('u'+o+j);fl(te,'-'+at,'dm');snd('hit');t.h-=at;if(t.h<=0){G.dc[o].push(t.id);G.u[o][j]=null;fl(te,'Unit kalah','sh')}render();await W(380)}}}
+function rcy(){if(G.busy||G.turn)return;if(G.cv[0]>=2){toast('Penukaran energi giliran ini sudah habis (2/2).');return}if(G.en[0]>=10){toast('Energimu sudah penuh (10).');return}if(!G.hd[0].length){toast('Tidak ada kartu untuk ditukar.');return}G.rm=G.rm?0:1;G.sel=-1;if(G.rm)toast('Pilih satu kartu untuk ditukar menjadi energi.');render()}
+function rok(){if(G.busy||!G.rm||G.sel<0||G.cv[0]>=2)return;G.busy=true;recycle(0,G.sel).catch(()=>{})}
+async function recycle(s,k){const c=CD[G.hd[s][k]],f=rc(s?$('dk1'):$('hand').children[k]);G.hd[s].splice(k,1);G.cv[s]++;G.sel=-1;G.rm=0;render();lg(`${s?'Lawan':'Kamu'} menukar ${c.n} menjadi energi.`);snd('use');await fly(CH(c),f,$('dc'+s));G.dc[s].push(c.id);G.en[s]=Math.min(10,G.en[s]+1);fl(s,'+1 energi','en');ring(s,'hl');snd('ok');render();await W(300);if(!s){G.busy=false;render()}}
+function dcv(v){const l=G.dc[+v];ov(`<div class=pn><h3>TUMPUKAN BUANGAN ${+v?'LAWAN':'KAMU'} (${l.length})</h3><p>${l.length?l.map(id=>CD[id].n).join(', '):'Belum ada kartu.'}</p><div class=bt><button class=b data-a=x>TUTUP</button></div></div>`,'mid')}
+function mv(v){const k=+v,u=G.u[0][k];if(G.busy||G.turn||!u||u.mv||G.en[0]<1)return;const to=(k<3?[3,4,5]:[0,1,2]).find(i=>!G.u[0][i]);if(to==null)return;closeOv();G.en[0]--;u.mv=1;G.u[0][to]=u;G.u[0][k]=null;snd('sh');lg(`Kamu memindahkan ${CD[u.id].n} ke barisan ${to<3?'depan':'belakang'}.`);render();burst($('u0'+to))}
+function insp(v){const[s,k]=v.split(',').map(Number),u=G.u[s][k];if(!u)return;const c=CD[u.id];ov(`<div class=pn><h3>${c.n} · ${RN[c.q]}</h3><p>${desc(c)}</p><p>Kondisi sekarang: Serangan <b>${u.a}</b> · HP <b class=gd>${u.h}</b></p>${!s&&!u.mv?'<p class=nt>Pindah barisan: 1 energi, sekali per giliran.</p>':''}<div class=bt>${!s&&!u.mv&&!G.busy&&!G.turn&&G.en[0]>0&&(k<3?[3,4,5]:[0,1,2]).some(i=>!G.u[0][i])?`<button class="b s" data-a=mv data-v=${k}>PINDAH KE ${k<3?'BELAKANG':'DEPAN'}</button>`:''}<button class=b data-a=x>TUTUP</button></div></div>`,'mid')}
+function clr(){$('sq').value='';$('sc2').value='';$('sd').value='';lres()}
+function lres(){const q=$('sq').value.trim().toLowerCase().split(/\s+/).filter(Boolean),c=$('sc2').value,d=$('sd').value,L=LB.filter(x=>q.every(w=>x.hay.includes(w))&&(c===''||x.s==c)&&(d===''||x.d==d));
+$('lr').innerHTML=L.length?`<p class=nt>${L.length} materi ditemukan.</p><div class=gr>${L.map(x=>`<div class=tc><b>${x.t.n}</b><small>Tahap ${x.s+1}: ${SN[x.s]} · ${DNm[x.d]}</small><p>${x.t.k}</p><code>${x.t.f}</code><details><summary>Contoh soal</summary><p>${x.q} <b>Jawaban: ${x.a}</b></p><ol>${x.st.map(y=>`<li>${y}</li>`).join('')}</ol></details><small>Status: ${mst(x.t.n)}</small><button class="b s" data-a=prac data-v=${x.s},${x.i}>LATIH MATERI INI</button></div>`).join('')}</div>`:'<p class=qt>Materi tidak ditemukan.</p><p class=nt>Coba kata kunci lain atau ubah filter.</p>'}
 function draw(s,n){for(;n>0&&G.hd[s].length<7;n--){if(!G.dk[s].length){if(!G.dc[s].length)break;G.dk[s]=shuf(G.dc[s]);G.dc[s]=[]}G.hd[s].push(G.dk[s].pop())}}
 function startGame(){EP++;const e=EP,dk=()=>shuf([...CD,...CD].map(c=>c.id));
-G={diff:DF,hero:P.hero,hp:[30,30],en:[0,0],sh:[0,0],pen:[0,0],dk:[dk(),dk()],hd:[[],[]],dc:[[],[]],act:[null,null],hs:[[],[]],turn:-1,rd:0,busy:true,sel:-1,ok:0,bad:0,wr:{},lt:{},lg:[],over:0};
+G={diff:DF,hero:P.hero,hp:[30,30],en:[0,0],sh:[0,0],pen:[0,0],dk:[dk(),dk()],hd:[[],[]],dc:[[],[]],act:[null,null],hs:[[],[]],turn:-1,rd:0,busy:true,sel:-1,ok:0,bad:0,wr:{},lt:{},lg:[],over:0,u:[Array(6).fill(null),Array(6).fill(null)],cv:[0,0],cb:[null,null],bf:[0,0],rg:[0,0],dt:[0,0],rm:0,al:DF<3?[2,5,8][DF]:aiLv(),dsum:0,dn:0,wst:0,tn:0,un:0};
 draw(0,4);draw(1,4);
-const reg=i=>`<div class="rg r${i}"><div class=who><div class=av id=av${i}>${AV(i?'o':G.hero)}</div><div class=bars><b>${i?'Baron Nol ('+['MUDAH','SEDANG','SULIT'][DF]+')':HR[G.hero].nm}</b><div class=hp><i id=hb${i}></i><span id=ht${i}></span></div><div class=en id=en${i}></div></div></div><div class=slots id=sl${i}></div><div class=piles><div class=pile id=dk${i}></div><div class=pile id=dc${i}></div></div></div>`;
-$('game').innerHTML=`<div id=arena>${reg(1)}<div class=mid><div class=plane></div><div class=main id=m1></div><div class=main id=m0></div><div class=tb><button class="b s" data-a=log>CATATAN</button><button class="b s" data-a=help>BANTUAN</button><button class="b s" data-a=set>PENGATURAN</button><button class="b s" data-a=quit>MENYERAH</button></div></div>${reg(0)}<div id=info></div><div id=hand></div></div>`;
+const reg=i=>`<div class="rg r${i}"><div class=who><div class=av id=av${i}>${AV(i?'o':G.hero)}</div><div class=bars><b>${i?'Baron Nol · Tingkat '+G.al:HR[G.hero].nm}</b><div class=hp><i id=hb${i}></i><span id=ht${i}></span></div><div class=en id=en${i}></div></div></div><div class=piles><div class=pile id=dk${i}></div><div class=pile id=dc${i} data-a=dcv data-v=${i}></div></div></div>`;
+$('game').innerHTML=`<div id=arena>${reg(1)}<div class=mid>${bd()}<div class=rcb id=rcb data-a=rcy><svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 12-5l2-2v6h-6l2.4-2.4A5 5 0 0 0 7 12z" fill=currentColor /><path d="M19 12a7 7 0 0 1-12 5l-2 2v-6h6l-2.4 2.4A5 5 0 0 0 17 12z" fill=currentColor /></svg><small>ENERGI TAMBAHAN</small><b id=rct>0/2</b></div><div class=tb><button class="b s" data-a=log>CATATAN</button><button class="b s" data-a=help>BANTUAN</button><button class="b s" data-a=set>PENGATURAN</button><button class="b s" data-a=quit>MENYERAH</button></div></div>${reg(0)}<div id=info></div><div id=hand></div></div>`;
 closeOv();go('game');render();
 if(!SV.seen){SV.seen=1;save();help()}
 setTimeout(()=>{if(e==EP)startTurn(0).catch(()=>{})},500)}
@@ -182,17 +237,19 @@ function render(){if(!G)return;
 for(const i of[0,1]){const g=G;
 $('hb'+i).style.width=Math.max(0,g.hp[i])*100/30+'%';
 $('ht'+i).textContent=`HP ${Math.max(0,g.hp[i])}/30${g.sh[i]?'  ·  Perisai '+g.sh[i]:''}`;
-$('en'+i).innerHTML=`<small>Energi ${g.en[i]}/10${i?' · Kartu lawan '+g.hd[1].length:''}</small>`+'<u class=on></u>'.repeat(g.en[i])+'<u></u>'.repeat(10-g.en[i]);
+$('en'+i).innerHTML=`<small>Energi ${g.en[i]}/10${i?' · Kartu lawan '+g.hd[1].length:''}</small>`+'<u class=on></u>'.repeat(g.en[i])+'<u></u>'.repeat(10-g.en[i])+(g.sh[i]?`<b class=sti data-a=sti data-v="Perisai: menyerap ${g.sh[i]} kerusakan. Hilang di awal gilirannya sendiri.">◈ Perisai ${g.sh[i]}</b>`:'')+(g.pen[i]?`<b class=sti data-a=sti data-v="Pelemahan: energi berkurang ${g.pen[i]} pada giliran berikutnya.">▽ Energi −${g.pen[i]}</b>`:'')+(g.bf[i]?`<b class=sti data-a=sti data-v="Penguatan: +2 serangan kartu dan +1 serangan unit selama ${g.bf[i]} giliran.">▲ Penguatan ${g.bf[i]}</b>`:'')+(g.rg[i]?`<b class=sti data-a=sti data-v="Pemulihan bertahap: pulih 2 HP di awal giliran, ${g.rg[i]} kali lagi.">✚ Pulih ${g.rg[i]}</b>`:'')+(g.dt[i]?`<b class=sti data-a=sti data-v="Racun: kehilangan 2 HP di awal giliran, ${g.dt[i]} kali lagi.">☠ Racun ${g.dt[i]}</b>`:'');
 $('dk'+i).innerHTML=`Dek<b>${g.dk[i].length}</b>`;$('dc'+i).innerHTML=`Buangan<b>${g.dc[i].length}</b>`;
-$('sl'+i).innerHTML=[0,1,2].map(k=>g.hs[i][k]!=null?CH(CD[g.hs[i][k]],{sm:1}):'<div class="card sm ph">Pendukung</div>').join('');
+for(let k=0;k<6;k++){const u=g.u[i][k],e=$('u'+i+k),cs=!i&&!G.rm&&G.sel>=0?CD[G.hd[0][G.sel]]:null;e.className='us'+(u?' on':'')+(!u&&cs&&cs.u&&(cs.rw=='x'||(cs.rw=='f')==(k<3))?' vl':'');if(u){e.dataset.a='insp';e.dataset.v=i+','+k}else delete e.dataset.a;e.innerHTML=u?CH(CD[u.id],{a:u.a,h:u.h}):'<span>'+(k<3?'Depan':'Belakang')+'</span>'}
+$('fc'+i).textContent=g.u[i].slice(0,3).filter(Boolean).length+'/3';$('bc'+i).textContent=g.u[i].slice(3).filter(Boolean).length+'/3';
 $('m'+i).innerHTML=g.act[i]!=null?CH(CD[g.act[i]]):'Kartu utama'+(i?' lawan':'')}
-$('hand').innerHTML=G.hd[0].map((id,k)=>CH(CD[id],{k,s:k==G.sel,off:CD[id].c>G.en[0]})).join('');
+$('hand').innerHTML=G.hd[0].map((id,k)=>CH(CD[id],{k,s:k==G.sel,off:!G.rm&&CD[id].c>G.en[0],rm:G.rm,kb:G.cb[0]===0&&CD[id].tp==1&&CD[id].d>0})).join('');
 const c=G.sel>=0?CD[G.hd[0][G.sel]]:null;
-$('info').innerHTML=`<span>${G.over?'Pertandingan selesai.':G.turn?'Giliran lawan…':c?`<b>${c.n}</b> — ${desc(c)} ${risk(c)} Biaya ${c.c} energi.`:`Giliranmu · Putaran ${G.rd} · Pilih kartu di tanganmu.`}</span><span>${c?'<button class=b data-a=use>GUNAKAN KARTU</button>':''}<button class="b s" data-a=end>AKHIRI GILIRAN</button></span>`}
-async function startTurn(s){G.turn=s;if(!s)G.rd++;G.sh[s]=0;G.sel=-1;G.en[s]=Math.max(0,Math.min(10,3+((G.rd-1)>>1))-G.pen[s]);G.pen[s]=0;draw(s,1);render();toast(s?'GILIRAN LAWAN':'GILIRANMU');await W(900);if(s)await ai();else{G.busy=false;render()}}
+$('rcb').className='rcb'+(G.rm?' on':'')+(G.cv[0]>=2?' dis':'');$('rct').textContent=G.cv[0]+'/2';
+$('info').innerHTML=`<span>${G.over?'Pertandingan selesai.':G.turn?'Giliran lawan…':G.rm?(c?`Tukar <b>${c.n}</b> menjadi +1 energi?`:'Pilih satu kartu untuk ditukar menjadi energi.'):c?`<b>${c.n}</b> — ${desc(c)} ${risk(c)} Biaya ${c.c} energi.`:`Giliranmu · Putaran ${G.rd} · Pilih kartu di tanganmu.`}</span><span>${G.rm?(c?'<button class=b data-a=rok>TUKAR</button>':'')+'<button class="b s" data-a=rcy>BATAL</button>':(c?'<button class=b data-a=use>GUNAKAN KARTU</button>':'')+'<button class="b s" data-a=end>AKHIRI GILIRAN</button>'}</span>`}
+async function startTurn(s){G.turn=s;if(!s)G.rd++;G.sh[s]=0;G.sel=-1;G.en[s]=Math.max(0,Math.min(10,3+((G.rd-1)>>1))-G.pen[s]);G.pen[s]=0;G.cv[s]=0;G.cb[s]=null;if(G.bf[s])G.bf[s]--;G.u[s].forEach(u=>u&&(u.mv=0));if(!s)G.rm=0;for(const i of[3,4,5]){const u=G.u[s][i],q=u&&CD[u.id].sp;if(q=='hl')G.hp[s]=Math.min(30,G.hp[s]+1);if(q=='sh')G.sh[s]=Math.min(20,G.sh[s]+2);if(q=='en')G.en[s]=Math.min(10,G.en[s]+1)}if(G.rg[s]){G.rg[s]--;G.hp[s]=Math.min(30,G.hp[s]+2);setTimeout(()=>fl(s,'+2 HP','hl'),300)}if(G.dt[s]){G.dt[s]--;G.hp[s]-=2;setTimeout(()=>fl(s,'-2 racun','dm'),300)}draw(s,1);render();toast(s?'GILIRAN LAWAN':'GILIRANMU');await W(900);if(chk())return;if(s)await ai();else{G.busy=false;render()}}
 function chk(){if(G.hp[0]>0&&G.hp[1]>0)return false;if(!G.over){G.over=1;G.busy=true;const e=EP;setTimeout(()=>e==EP&&finish(),600)}return true}
 async function hit(t,n,p){let a=0;if(!p&&G.sh[t]){a=Math.min(G.sh[t],n);G.sh[t]-=a;n-=a}G.hp[t]-=n;fl(t,n?'-'+n:'Terblokir',n?'dm':'sh');if(a&&!G.sh[t])fl(t,'Perisai pecah','sh');ring(t,'hit');$('arena').classList.add('shk');setTimeout(()=>$('arena').classList.remove('shk'),300);snd('hit');render();await W(380)}
-async function eff(s,c,ok){const o=1-s,f=v=>ok?v:c.t=='k'||c.t=='s'?0:v>>1,d=f(c.d),sh=f(c.sh),hl=f(c.hl),dr=f(c.dr),en=f(c.en);
+async function eff(s,c,ok){const o=1-s,f=v=>ok?v:c.t=='k'||c.t=='s'?0:v>>1,d=f(c.d)+(ok&&c.d&&c.tp==1&&G.cb[s]===0?2:0)+(c.d&&G.bf[s]?2:0),sh=f(c.sh),hl=f(c.hl),dr=f(c.dr),en=f(c.en);
 if(!ok&&c.self)await hit(s,c.self,1);
 for(let i=0;i<c.h&&d;i++){await proj(s,o);await hit(o,d,c.p)}
 if(sh){G.sh[s]=Math.min(20,G.sh[s]+sh);fl(s,'+'+sh+' perisai','sh');ring(s,'sh');snd('sh');render();await W(400)}
@@ -200,26 +257,29 @@ if(hl){const n=Math.min(hl,30-G.hp[s]);G.hp[s]+=n;fl(s,'+'+n+' HP','hl');ring(s,
 if(en){G.en[s]=Math.min(10,G.en[s]+en);fl(s,'+'+en+' energi','en');render();await W(300)}
 if(dr){draw(s,dr);fl(s,'Tarik kartu','en');render();await W(300)}
 if(ok&&c.pen){G.pen[o]+=c.pen;fl(o,'−'+c.pen+' energi','dm');await W(300)}
-if(ok&&c.cyc){G.dc[s].push(...G.hd[s]);G.hd[s]=[];draw(s,c.cyc);render();await W(300)}
+if(ok&&c.bf){G.bf[s]=c.bf;fl(s,'Penguatan','en');ring(s,'sh');render();await W(300)}if(ok&&c.rg){G.rg[s]=c.rg;render()}if(ok&&c.dt){G.dt[o]=c.dt;fl(o,'Racun','dm');render();await W(300)}if(ok&&c.cyc){G.dc[s].push(...G.hd[s]);G.hd[s]=[];draw(s,c.cyc);render();await W(300)}
+if(ok&&c.rt&&G.hd[s].length<7&&G.dc[s].length){G.hd[s].push(G.dc[s].splice(r(0,G.dc[s].length-1),1)[0]);fl(s,'Kartu kembali','en');render();await W(300)}
 if(!ok&&!d&&!sh&&!hl&&!en&&!dr&&!c.self)fl(s,'Gagal','dm')}
 async function playCard(s,k,ok){const id=G.hd[s][k],c=CD[id],from=rc(s?$('dk1'):$('hand').children[k]);
 G.hd[s].splice(k,1);G.en[s]-=c.c;G.sel=-1;render();lg(`${s?'Lawan':'Kamu'} memakai ${c.n}${ok?'':' (belum tepat)'}.`);
-snd('use');await fly(CH(c),from,$('m'+s));
+snd('use');const ui=c.u?slot(s,c):-1;await fly(CH(c),from,c.u?$('u'+s+ui):$('m'+s));if(c.u){G.u[s][ui]={id,a:ok?c.ua:c.ua>>1,h:ok?c.uh:Math.max(1,c.uh>>1)};if(!s)G.un++;G.cb[s]=c.tp;render();burst($('u'+s+ui));snd('sh');await W(350);return}
 if(G.act[s]!=null)G.hs[s]=[G.act[s],...G.hs[s]].slice(0,3);
-G.act[s]=id;render();$('m'+s).classList.add('glow');setTimeout(()=>$('m'+s).classList.remove('glow'),800);
-await eff(s,c,ok);await W(250);
+G.act[s]=id;render();burst($('m'+s));$('m'+s).classList.add('glow');setTimeout(()=>$('m'+s).classList.remove('glow'),800);
+await eff(s,c,ok);G.cb[s]=c.tp;await W(250);
 await fly(CH(c),$('m'+s),$('dc'+s));G.dc[s].push(id);render()}
 /* ===== Lawan AI ===== */
-const sc=c=>{const d=G.diff,hp=G.hp[1],e=G.en[1];if(!d)return Math.random();
-let v=c.d*c.h+Math.min(c.hl,30-hp)*(hp<14?2:.7)+c.sh*(hp<12?1.4:.6)+c.dr*1.2+Math.min(c.en,10-e)*1.2+c.pen*1.5-c.self*(d>1&&hp<=c.self+4?99:1);
-if(d>1&&c.d*c.h>=G.hp[0]+(c.p?0:G.sh[0]))v+=99;if(d>1&&c.c==e)v*=1.25;
-return v<=0?-1:v/(c.c+.5)+Math.random()*(d>1?.1:1.2)};
-async function ai(){for(let n=0;n<9;n++){const e=G.en[1],ops=G.hd[1].map((id,k)=>({k,c:CD[id]})).filter(x=>x.c.c<=e);ops.forEach(x=>x.sc=sc(x.c));ops.sort((a,b)=>b.sc-a.sc);const b=ops[0];
-if(!b||b.sc<0||(!G.diff&&n>1&&Math.random()<.3))break;await W(500);await playCard(1,b.k,true);if(chk())return;await W(300)}
-await startTurn(0)}
+const sc=c=>{const a=G.al,hp=G.hp[1],e=G.en[1];if(a<3)return Math.random();
+let v=c.d*c.h+Math.min(c.hl,30-hp)*(a>=4&&hp<14?2:.7)+c.sh*(a>=4&&hp<12?1.4:.6)+c.dr*1.2+Math.min(c.en,10-e)*1.2+c.pen*1.5+(c.u?c.ua*2+c.uh*.6+(c.sp?2.5:0):0)+(c.rt&&G.dc[1].length>3?3:0)+(c.bf?3:0)+(c.rg?c.rg*1.5:0)+(c.dt?c.dt*2:0)-c.self*(a>=6&&hp<=c.self+4?99:1);
+if(a>=6&&c.d*c.h>=G.hp[0]+(c.p?0:G.sh[0]))v+=99;if(a>=5&&c.c==e)v*=1.25;
+return v<=0?-1:v/(c.c+.5)+Math.random()*(10-a)/6};
+async function ai(){for(let n=0;n<9;n++){const e=G.en[1],all=G.hd[1].map((id,k)=>({k,c:CD[id],sc:sc(CD[id])})),ok=x=>!x.c.u||slot(1,x.c)!=null,ops=all.filter(x=>x.c.c<=e&&ok(x)).sort((a,b)=>b.sc-a.sc),b=ops[0];
+if(G.al>=5&&e>=1&&!(b&&b.c.c>=e)){const k=[3,4,5].find(i=>{const u=G.u[1][i];return u&&u.a>1&&!u.mv&&!CD[u.id].sp}),to=[0,1,2].find(i=>!G.u[1][i]);if(k!=null&&to!=null){await W(400);G.en[1]--;const u=G.u[1][k];u.mv=1;G.u[1][to]=u;G.u[1][k]=null;lg('Lawan memindahkan '+CD[u.id].n+' ke barisan depan.');snd('sh');render();burst($('u1'+to));continue}}
+if((!b||b.sc<0)&&G.al>=3&&G.cv[1]<2&&e<10){const w=all.find(x=>x.c.c==e+1&&x.sc>0&&ok(x)),j=all.filter(x=>x!==w).sort((a,b)=>a.sc-b.sc)[0];if(w&&j){await W(400);await recycle(1,j.k);continue}}
+if(!b||b.sc<0||(G.al<3&&n>1&&Math.random()<.3))break;await W(500);await playCard(1,b.k,true);if(chk())return;await W(300)}
+await battle(1);if(chk())return;await startTurn(0)}
 /* ===== Soal & jawaban ===== */
 const qOpen=q=>{Q=q;ov(`<div class=pn><h3>${SN[q.s]} · ${q.t.n}</h3><p class=qt>${q.q}</p><p class=rk>${q.mode=='play'?risk(CD[q.cid]):'Soal latihan: tidak memengaruhi pertarungan.'}</p><input id=ans inputmode=decimal autocomplete=off placeholder="Tulis jawabanmu di sini"><p id=msg></p><div class=bt><button class="b s" data-a=cancel>BATAL</button><button class=b data-a=ans>JAWAB</button></div></div>`,'top');setTimeout(()=>$('ans')?.focus(),60)};
-function rec(q,ok){const t=SV.t[q.t.n]=SV.t[q.t.n]||[0,0];t[ok?0:1]++;SV[ok?'c':'x']++;SV.xp+=ok?10:4;if(q.mode=='play'&&G){G[ok?'ok':'bad']++;G[ok?'lt':'wr'][q.t.n]=1}save()}
+function rec(q,ok){const t=SV.t[q.t.n]=SV.t[q.t.n]||[0,0];t[ok?0:1]++;SV[ok?'c':'x']++;SV.xp+=ok?10:4;if(q.mode=='play'&&G){G[ok?'ok':'bad']++;if(ok){G.dsum+=q.s;G.dn++}G[ok?'lt':'wr'][q.t.n]=1}save()}
 function ans(){const q=Q;if(!q||q.lk)return;const v=$('ans').value.trim().replace(',','.').replace('−','-');
 if(v===''||isNaN(+v)){$('msg').textContent='Tulis jawaban berupa angka dulu ya.';return}
 q.lk=1;const ok=Math.abs(+v-q.a)<1e-6;rec(q,ok);closeOv();
@@ -228,37 +288,39 @@ else if(ok){snd('ok');LQ=q;ov(`<div class=pn><h3>JAWABAN BENAR</h3><p class=qt>T
 else{snd('bad');learn(q,v)}}
 async function resolve(q,ok,v){await playCard(0,q.k,ok);if(ok){snd('ok');toast('Tepat! Kartu berhasil diaktifkan.');q.fin()}else{await W(400);learn(q,v)}}
 function learn(q,v){LQ=q;ov(`<div class=pn><h3>WAKTU BELAJAR</h3><h4>${SN[q.s]} · ${q.t.n}</h4><p class=qt>${q.q}</p><p>Jawabanmu: <b class=bd>${v}</b> · Jawaban yang benar: <b class=gd>${q.a}</b></p><p>${q.t.k}</p><p>Rumus: <code>${q.t.f}</code></p><ol>${q.st.map(x=>`<li>${x}</li>`).join('')}</ol><p><b>Kesimpulan:</b> jawabannya adalah ${q.a}.</p><p class=rk>Belum tepat. Pelajari langkahnya, lalu coba lagi pada soal berikutnya.</p><div class=bt><button class="b s" data-a=sim>COBA SOAL SERUPA</button><button class=b data-a=cont>${q.lbl}</button></div></div>`,'top')}
-function finish(){const w=G.hp[1]<=0,wr=Object.keys(G.wr),lt=Object.keys(G.lt);SV.m++;if(w)SV.w++;SV.xp+=w?30:10;save();snd(w?'win':'lose');
-ov(`<div class="pn ${w?'w':'l'}"><h3>${w?'KEMENANGAN':'KEKALAHAN'}</h3><p class=qt>${w?'Kamu menaklukkan Baron Nol!':'Belum berhasil kali ini, tetapi kamu sudah belajar.'}</p><p>Jawaban benar: <b class=gd>${G.ok}</b> · Jawaban belum tepat: <b class=bd>${G.bad}</b> · Putaran: ${G.rd}</p><p>${lt.length?'Materi yang kamu kuasai: '+lt.join(', ')+'.':''}</p><p>${wr.length?'Materi untuk diulang: '+wr.join(', ')+'.':'Semua soal kamu jawab dengan tepat!'}</p><div class=bt><button class="b s" data-a=menu>MENU UTAMA</button><button class=b data-a=start data-v=${G.diff}>${w?'MAIN LAGI':'COBA LAGI'}</button></div></div>`,'mid'+(w?' win':''))}
+function finish(){const w=G.hp[1]<=0,wr=Object.keys(G.wr),lt=Object.keys(G.lt);SV.m++;if(w)SV.w++;SV.xp+=w?30:10;{const tot=G.ok+G.bad,acc=tot?G.ok/tot:.5,pf=.3*acc+.2*(w?1:0)+.15*(G.dn?G.dsum/G.dn/4:0)+.15*(G.tn?1-Math.min(1,G.wst/G.tn/4):.5)+.1*Math.min(1,G.un/3)+.1*rw();SV.sk=Math.max(1,Math.min(10,SV.sk+(pf-.5)*1.2));SV.h=[...SV.h,{w:w?1:0,a:acc}].slice(-8)}save();snd(w?'win':'lose');$('av'+(w?0:1)).classList.add('win');
+ov(`<div class="pn ${w?'w':'l'}"><h3>${w?'KEMENANGAN':'KEKALAHAN'}</h3><p class=qt>${w?'Kamu menaklukkan Baron Nol!':'Belum berhasil kali ini, tetapi kamu sudah belajar.'}</p><p>Jawaban benar: <b class=gd>${G.ok}</b> · Jawaban belum tepat: <b class=bd>${G.bad}</b> · Putaran: ${G.rd}</p><p class=rk>Peringkat kemampuanmu: ${SV.sk.toFixed(1)}/10 · Lawan berikutnya (adaptif): tingkat ${aiLv()}.</p><p>${lt.length?'Materi yang kamu kuasai: '+lt.join(', ')+'.':''}</p><p>${wr.length?'Materi untuk diulang: '+wr.join(', ')+'.':'Semua soal kamu jawab dengan tepat!'}</p><div class=bt><button class="b s" data-a=menu>MENU UTAMA</button><button class=b data-a=start data-v=${G.diff}>${w?'MAIN LAGI':'COBA LAGI'}</button></div></div>`,'mid'+(w?' win':''))}
 /* ===== Tampilan & navigasi ===== */
 function ov(h,p='top'){$('ov').className=p;$('ov').innerHTML='<div class=bk></div>'+h}
 const closeOv=()=>{$('ov').className='';$('ov').innerHTML=''};
 const cf=(m,f)=>{CF=f;ov(`<div class=pn><h3>Konfirmasi</h3><p>${m}</p><div class=bt><button class="b s" data-a=x>BATAL</button><button class=b data-a=yes>YA</button></div></div>`,'mid')};
-const help=()=>ov(`<div class=pn><h3>CARA BERMAIN</h3><ol><li>Kamu dan lawan punya 30 HP. Habiskan HP lawan untuk menang.</li><li>Setiap giliran kamu mendapat energi dan menarik satu kartu.</li><li>Pilih kartu, tekan <b>GUNAKAN KARTU</b>, lalu jawab soal matematikanya.</li><li>Jawaban benar membuat kartu bekerja penuh. Jawaban belum tepat membuat efek melemah atau gagal, dan kamu mendapat pembahasan.</li><li><b>BATAL</b> mengembalikan kartu tanpa mengurangi energi.</li><li>Tekan <b>AKHIRI GILIRAN</b> jika energi atau kartumu sudah cukup.</li></ol><p class=nt>Perisai hilang di awal gilirannya sendiri. Kartu Serangan, Pertahanan, dan Pemulihan bekerja separuh jika jawaban salah. Kartu Pengetahuan dan Khusus tidak berefek jika jawaban salah.</p><div class=bt><button class=b data-a=x>MENGERTI</button></div></div>`,'mid');
+const help=()=>ov(`<div class=pn><h3>CARA BERMAIN</h3><ol><li>Kamu dan lawan punya 30 HP. Habiskan HP lawan untuk menang.</li><li>Setiap giliran kamu mendapat energi dan menarik satu kartu.</li><li>Pilih kartu, tekan <b>GUNAKAN KARTU</b>, lalu jawab soal matematikanya.</li><li>Jawaban benar membuat kartu bekerja penuh. Jawaban belum tepat membuat efek melemah atau gagal, dan kamu mendapat pembahasan.</li><li><b>BATAL</b> mengembalikan kartu tanpa mengurangi energi.</li><li>Kartu <b>Unit</b> ditempatkan di Barisan Depan atau Belakang. Unit depan menyerang di akhir giliran dan melindungi unit belakang. Unit belakang memberi dukungan tiap giliran. Klik unit untuk melihat statistiknya.</li><li>Tombol daur ulang di kanan meja menukar satu kartu menjadi +1 energi, maksimal 2 kali per giliran.</li><li>Kombo: kartu Serangan bertema Aljabar mendapat +2 serangan jika kartu sebelumnya di giliran itu bertema Aritmetika. Kartu yang memenuhi syarat diberi sorotan emas. Unit dapat dipindah barisan dengan 1 energi.</li><li>Efek berkelanjutan (Penguatan, Pulih, Racun) tampil sebagai ikon di bawah bar energi. Klik ikon untuk membaca penjelasannya.</li><li>Tekan <b>AKHIRI GILIRAN</b> jika energi atau kartumu sudah cukup.</li></ol><p class=nt>Perisai hilang di awal gilirannya sendiri. Kartu Serangan, Pertahanan, dan Pemulihan bekerja separuh jika jawaban salah. Kartu Pengetahuan dan Khusus tidak berefek jika jawaban salah.</p><div class=bt><button class=b data-a=x>MENGERTI</button></div></div>`,'mid');
 const apply=()=>document.body.classList.toggle('noanim',!SV.anim);
 const set=()=>{apply();ov(`<div class=pn><h3>PENGATURAN</h3><p>Suara: <button class="b s" data-a=tg data-v=snd>${SV.snd?'NYALA':'MATI'}</button></p><p>Animasi: <button class="b s" data-a=tg data-v=anim>${SV.anim?'PENUH':'DIKURANGI'}</button></p><p class=nt>Animasi dikurangi membuat permainan lebih ringan.</p><div class=bt><button class="b s" data-a=rst>HAPUS PROGRES</button><button class=b data-a=x>TUTUP</button></div></div>`,'mid')};
 const go=id=>{document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id==id));({char:rChar,diff:rDiff,lib:rLib,prog:rProg}[id]||(()=>{}))()};
 const rChar=()=>$('char').innerHTML=`<h2>Pilih Karakter</h2><div class=row>${Object.keys(HR).map(k=>`<div class="hc${P.hero==k?' sel':''}" data-a=hero data-v=${k}><div class=hv>${AV(k)}</div><b>${HR[k].nm}</b><p>${HR[k].ds}</p></div>`).join('')}</div><p class=nt>Karakter hanya mengubah penampilan, bukan kekuatan.</p><div class=row><button class="b s" data-a=go data-v=menu>KEMBALI</button><button class=b data-a=go data-v=diff>PILIH KARAKTER</button></div>`;
-const DD=['MUDAH|Lawan memilih kartu hampir acak.','SEDANG|Lawan menghitung serangan, pertahanan, dan energi.','SULIT|Lawan menghemat energi dan mencari kesempatan menang.'];
+const DD=['MUDAH|Lawan memilih kartu hampir acak.','SEDANG|Lawan menghitung serangan, pertahanan, dan energi.','SULIT|Lawan menghemat energi dan mencari kesempatan menang.','ADAPTIF|Lawan menyesuaikan diri dengan kemampuanmu (disarankan).'];
 const rDiff=()=>$('diff').innerHTML=`<h2>Pilih Tingkat Kesulitan</h2><div class=row>${DD.map((x,i)=>`<div class=hc><button class=b data-a=start data-v=${i}>${x.split('|')[0]}</button><p>${x.split('|')[1]}</p></div>`).join('')}</div><button class="b s" data-a=go data-v=char>KEMBALI</button>`;
-const rLib=()=>$('lib').innerHTML=`<h2>Perpustakaan Materi</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button>`+S.map((g,s)=>`<h3 class=sh>Tahap ${s+1}: ${SN[s]}</h3><p class=nt style="align-self:flex-start">Kartu terkait: ${CD.filter(c=>c.tp==s).map(c=>c.n).join(', ')}</p><div class=gr>${g.map((t,i)=>{const[q,a,st]=t.g();return `<div class=tc><b>${t.n}</b><p>${t.k}</p><code>${t.f}</code><details><summary>Contoh soal</summary><p>${q} <b>Jawaban: ${a}</b></p><ol>${st.map(x=>`<li>${x}</li>`).join('')}</ol></details><small>Status: ${mst(t.n)}</small><button class="b s" data-a=prac data-v=${s},${i}>LATIH MATERI INI</button></div>`}).join('')}</div>`).join('');
+const rLib=()=>{$('lib').innerHTML=`<h2>Perpustakaan Materi</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button><div class=sb><svg viewBox="0 0 24 24" width=20><circle cx=10 cy=10 r=6 fill=none stroke=currentColor stroke-width=2 /><path d="M15 15l6 6" stroke=currentColor stroke-width=2 /></svg><input id=sq placeholder="Cari materi matematika..." autocomplete=off><button class=xb data-a=clr title="Hapus pencarian">✕</button></div><div class=row><select id=sc2><option value="">Semua kategori${SN.map((n,i)=>`<option value=${i}>${n}`).join('')}</select><select id=sd><option value="">Semua tingkat${DNm.map((n,i)=>`<option value=${i}>${n}`).join('')}</select></div><div id=lr style="width:min(1100px,100%)"></div>`;lres()};
+document.addEventListener('input',e=>{if(['sq','sc2','sd'].includes(e.target.id))lres()});
 const rProg=()=>{const tot=SV.c+SV.x,A=S.flat(),tr=n=>SV.t[n.n]||[0,0],ch=a=>a.length?a.map(t=>`<code>${t.n}</code>`).join(' '):'<span class=nt>Belum ada.</span>';
-$('prog').innerHTML=`<h2>Progres Belajar</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button><div class=st><div><b>${SV.m}</b>Pertandingan</div><div><b>${SV.w}</b>Kemenangan</div><div><b>${SV.c}</b>Jawaban benar</div><div><b>${SV.x}</b>Jawaban belum tepat</div><div><b>${tot?Math.round(SV.c*100/tot):0}%</b>Ketepatan</div><div><b>${1+(SV.xp/100|0)}</b>Tingkat (${SV.xp} XP)</div></div><div class=tc style="width:min(800px,100%)"><b>Materi yang sering salah</b><p>${ch(A.filter(t=>tr(t)[1]>0).sort((a,b)=>tr(b)[1]-tr(a)[1]).slice(0,6))}</p><b>Materi yang perlu diulang</b><p>${ch(A.filter(t=>mst(t.n)=='Perlu diulang'))}</p><b>Materi yang sudah dipelajari (${A.filter(t=>tr(t)[0]+tr(t)[1]>0).length} dari ${A.length})</b><p>${ch(A.filter(t=>tr(t)[0]+tr(t)[1]>0))}</p></div><p class=nt>Kamu tetap mendapat pengalaman belajar saat menjawab salah dan mempelajari pembahasannya.</p>`};
+$('prog').innerHTML=`<h2>Progres Belajar</h2><button class="b s" data-a=go data-v=menu>KEMBALI</button><div class=st><div><b>${SV.m}</b>Pertandingan</div><div><b>${SV.w}</b>Kemenangan</div><div><b>${SV.c}</b>Jawaban benar</div><div><b>${SV.x}</b>Jawaban belum tepat</div><div><b>${tot?Math.round(SV.c*100/tot):0}%</b>Ketepatan</div><div><b>${1+(SV.xp/100|0)}</b>Tingkat (${SV.xp} XP)</div><div><b>${SV.sk.toFixed(1)}</b>Peringkat kemampuan (1–10)</div></div><div class=tc style="width:min(800px,100%)"><b>Materi yang sering salah</b><p>${ch(A.filter(t=>tr(t)[1]>0).sort((a,b)=>tr(b)[1]-tr(a)[1]).slice(0,6))}</p><b>Materi yang perlu diulang</b><p>${ch(A.filter(t=>mst(t.n)=='Perlu diulang'))}</p><b>Materi yang sudah dipelajari (${A.filter(t=>tr(t)[0]+tr(t)[1]>0).length} dari ${A.length})</b><p>${ch(A.filter(t=>tr(t)[0]+tr(t)[1]>0))}</p></div><p class=nt>Kamu tetap mendapat pengalaman belajar saat menjawab salah dan mempelajari pembahasannya.</p>`};
 /* ===== Aksi ===== */
-const A={go,help,set,x:closeOv,sim(){qOpen({...genQ(LQ.s,LQ.i),mode:'prac',fin:LQ.fin,back:LQ.fin,lbl:LQ.lbl})},
+const A={go,help,set,x:closeOv,clr,rcy,rok,dcv,insp,mv,sti:toast,sim(){qOpen({...genQ(LQ.s,LQ.i),mode:'prac',fin:LQ.fin,back:LQ.fin,lbl:LQ.lbl})},
 hero(v){P.hero=v;rChar()},start(v){DF=+v;startGame()},
 tg(v){SV[v]=SV[v]?0:1;save();set()},
-pick(v){if(G.busy||G.turn)return;const k=+v,c=CD[G.hd[0][k]];if(c.c>G.en[0]){toast('Energi tidak cukup untuk kartu ini.');snd('bad');return}G.sel=G.sel==k?-1:k;snd('sel');render()},
-use(){if(G.busy||G.turn||G.sel<0)return;const c=CD[G.hd[0][G.sel]];G.busy=true;qOpen({...genQ(c.tp),mode:'play',k:G.sel,cid:c.id,lbl:'LANJUTKAN PERTARUNGAN',back:()=>{G.busy=false;render()},fin:()=>{if(!chk()){G.busy=false;render()}}})},
-end(){if(G.busy||G.turn)return;G.busy=true;G.sel=-1;render();startTurn(1).catch(()=>{})},
+pick(v){if(G.busy||G.turn)return;const k=+v,c=CD[G.hd[0][k]];if(G.rm){G.sel=G.sel==k?-1:k;snd('sel');render();return}if(c.u&&slot(0,c)==null){toast('Barisan untuk unit ini sudah penuh.');snd('bad');return}if(c.c>G.en[0]){toast('Energi tidak cukup untuk kartu ini.');snd('bad');return}G.sel=G.sel==k?-1:k;snd('sel');render()},
+use(){if(G.busy||G.turn||G.sel<0||G.rm)return;const c=CD[G.hd[0][G.sel]];G.busy=true;qOpen({...genQ(c.tp,weak(c.tp)),mode:'play',k:G.sel,cid:c.id,lbl:'LANJUTKAN PERTARUNGAN',back:()=>{G.busy=false;render()},fin:()=>{if(!chk()){G.busy=false;render()}}})},
+end(){if(G.busy||G.turn)return;G.busy=true;G.sel=-1;G.rm=0;G.wst+=G.en[0];G.tn++;render();battle(0).then(()=>chk()||startTurn(1)).catch(()=>{})},
 ans,cancel(){closeOv();Q&&Q.back&&Q.back()},cont(){closeOv();LQ.fin()},
 prac(v){const[s,i]=v.split(',').map(Number),n=()=>{};qOpen({...genQ(s,i),mode:'prac',fin:n,back:n,lbl:'TUTUP'})},
 log(){ov(`<div class=pn><h3>CATATAN PERTEMPURAN</h3>${G.lg.slice(-14).reverse().map(x=>`<p>${x}</p>`).join('')||'<p>Belum ada kejadian.</p>'}<div class=bt><button class=b data-a=x>TUTUP</button></div></div>`,'mid')},
 quit(){cf('Menyerah dan kembali ke menu utama? Pertandingan ini tidak dihitung.',()=>{EP++;closeOv();go('menu')})},
 menu(){EP++;closeOv();go('menu')},yes(){CF&&CF()},
-rst(){cf('Hapus semua progres belajar?',()=>{Object.assign(SV,{m:0,w:0,c:0,x:0,xp:0,t:{}});save();set()})}};
+rst(){cf('Hapus semua progres belajar?',()=>{Object.assign(SV,{m:0,w:0,c:0,x:0,xp:0,t:{},sk:3,h:[]});save();set()})}};
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.v,t)});
 document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='ans')ans()});
 $('deco').innerHTML=[...'+−×÷=π√∑ƒ²%x'].map(c=>`<span style="left:${r(2,96)}%;animation-delay:-${r(0,12)}s;font-size:${r(18,48)}px">${c}</span>`).join('')+[3,8,16].map((c,i)=>`<div class="dc d${i}">${CH(CD[c])}</div>`).join('');
+$('deco').insertAdjacentHTML('beforeend','<div class=mh style="left:3%">'+AV('n',1)+'</div><div class=mh style="right:3%">'+AV('a',1)+'</div>');
 apply();
 </script></body></html>
